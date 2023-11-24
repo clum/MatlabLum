@@ -28,6 +28,9 @@ PATHS{end+1,1} = [REPO_DIR,'\SDK\Graphics'];
 %Misc
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Misc'];
 
+%Probability
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Probability'];
+
 %-------------------------THIRD PARTY CODE---------------------------------
 %Real-time blockset
 PATHS{end+1,1} = [REPO_DIR,'\ThirdPartyCode\RTBlockset'];
