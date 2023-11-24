@@ -1,0 +1,186 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      5567,        178]
+NotebookOptionsPosition[      4541,        151]
+NotebookOutlinePosition[      4961,        168]
+CellTagsIndexPosition[      4918,        165]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["NeuralNetwork", "Title",
+ CellChangeTimes->{{3.8867014675090895`*^9, 
+  3.8867014734233513`*^9}},ExpressionUUID->"3fb7fad1-81ff-4a60-938a-\
+04a45edada9d"],
+
+Cell["\<\
+Christopher Lum
+lum@uw.edu\
+\>", "Text",
+ CellChangeTimes->{{3.8867014490541697`*^9, 
+  3.8867014565464087`*^9}},ExpressionUUID->"cf4aaa04-6cbe-4798-b6ab-\
+67b2c3664b42"],
+
+Cell["\<\
+Version History
+03/01/23: Created
+03/05/23: Updated documentation\
+\>", "Text",
+ CellChangeTimes->{{3.8867014583208184`*^9, 3.8867014646973023`*^9}, {
+  3.8870387305296917`*^9, 
+  3.88703874020992*^9}},ExpressionUUID->"ef305317-59cc-4928-8e32-\
+3794986f5031"],
+
+Cell[CellGroupData[{
+
+Cell["ForwardPropagate", "Section",
+ CellChangeTimes->{{3.8867015997154627`*^9, 3.8867016018251834`*^9}, {
+  3.8870387481478233`*^9, 
+  3.8870387498901157`*^9}},ExpressionUUID->"573b3d79-2a55-4cfe-893b-\
+751a26531e57"],
+
+Cell[TextData[{
+ "The outputs of the neural network can be written in matrix form as\n\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox[
+     OverscriptBox["z", "_"], 
+     RowBox[{"[", "L", "]"}]], "=", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["W", 
+       RowBox[{"[", "L", "]"}]], 
+      SuperscriptBox[
+       OverscriptBox["y", "_"], 
+       RowBox[{"[", 
+        RowBox[{"L", "-", "1"}], "]"}]]}], "+", 
+     SuperscriptBox[
+      OverscriptBox["b", "_"], 
+      RowBox[{"[", "L", "]"}]]}]}], TraditionalForm]],ExpressionUUID->
+  "0bef4456-fafd-4c03-98b4-4986d673d345"]
+}], "Text",
+ CellChangeTimes->{{3.886701476070571*^9, 3.886701492580024*^9}, {
+  3.8867217961930714`*^9, 
+  3.8867218151706505`*^9}},ExpressionUUID->"5b546a5d-2d8b-4eda-a7ec-\
+2cc7bbc3813f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["GradientNumerical", "Section",
+ CellChangeTimes->{{3.8867015997154627`*^9, 3.8867016018251834`*^9}, {
+  3.8870387481478233`*^9, 
+  3.887038761313717*^9}},ExpressionUUID->"fd7bc927-8103-49ee-9f59-\
+62398c6c6797"],
+
+Cell[TextData[{
+ "Computes the gradient via numerical perturbation.\n\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     RowBox[{"\[Del]", 
+      SubscriptBox["E", "c"]}], " ", 
+     RowBox[{"(", 
+      OverscriptBox["x", "_"], ")"}]}], "=", 
+    RowBox[{"{", 
+     RowBox[{
+      FractionBox[
+       RowBox[{"\[PartialD]", " ", 
+        SubscriptBox["E", "c"]}], 
+       RowBox[{"\[PartialD]", " ", 
+        SuperscriptBox["W", 
+         RowBox[{"[", "2", "]"}]]}]], ",", 
+      FractionBox[
+       RowBox[{"\[PartialD]", " ", 
+        SubscriptBox["E", "c"]}], 
+       RowBox[{"\[PartialD]", " ", 
+        SuperscriptBox["W", 
+         RowBox[{"[", "3", "]"}]]}]], ",", "...", ",", 
+      FractionBox[
+       RowBox[{"\[PartialD]", " ", 
+        SubscriptBox["E", "c"]}], 
+       RowBox[{"\[PartialD]", " ", 
+        SuperscriptBox["W", 
+         RowBox[{"[", 
+          SubscriptBox["N", "L"], "]"}]]}]], ",", 
+      FractionBox[
+       RowBox[{"\[PartialD]", " ", 
+        SubscriptBox["E", "c"]}], 
+       RowBox[{"\[PartialD]", " ", 
+        SuperscriptBox[
+         OverscriptBox["b", "_"], 
+         RowBox[{"[", "2", "]"}]]}]], ",", 
+      FractionBox[
+       RowBox[{"\[PartialD]", " ", 
+        SubscriptBox["E", "c"]}], 
+       RowBox[{"\[PartialD]", " ", 
+        SuperscriptBox[
+         OverscriptBox["b", "_"], 
+         RowBox[{"[", "3", "]"}]]}]], ",", "...", ",", 
+      FractionBox[
+       RowBox[{"\[PartialD]", " ", 
+        SubscriptBox["E", "c"]}], 
+       RowBox[{"\[PartialD]", " ", 
+        SuperscriptBox[
+         OverscriptBox["b", "_"], 
+         RowBox[{"[", 
+          SubscriptBox["N", "L"], "]"}]]}]]}], "}"}]}], TraditionalForm]],
+  ExpressionUUID->"45259ad8-3740-4e70-aa09-f6e60df69c83"]
+}], "Text",
+ CellChangeTimes->{{3.8870387596866755`*^9, 3.8870387794647474`*^9}, {
+  3.8870675249142113`*^9, 3.8870676118429008`*^9}, {3.887067649944501*^9, 
+  3.8870676692804284`*^9}, {3.887512224394243*^9, 
+  3.887512224426608*^9}},ExpressionUUID->"5a95218d-b740-4c7b-b53c-\
+cc28646bd023"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{924, 906},
+WindowMargins->{{984, Automatic}, {121, Automatic}},
+Magnification->1.25,
+FrontEndVersion->"12.3 for Microsoft Windows (64-bit) (July 9, 2021)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"3b7f0161-04c9-4edb-a068-5b1615b9de06"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 160, 3, 123, "Title",ExpressionUUID->"3fb7fad1-81ff-4a60-938a-04a45edada9d"],
+Cell[743, 27, 180, 6, 73, "Text",ExpressionUUID->"cf4aaa04-6cbe-4798-b6ab-67b2c3664b42"],
+Cell[926, 35, 269, 8, 102, "Text",ExpressionUUID->"ef305317-59cc-4928-8e32-3794986f5031"],
+Cell[CellGroupData[{
+Cell[1220, 47, 218, 4, 84, "Section",ExpressionUUID->"573b3d79-2a55-4cfe-893b-751a26531e57"],
+Cell[1441, 53, 788, 24, 105, "Text",ExpressionUUID->"5b546a5d-2d8b-4eda-a7ec-2cc7bbc3813f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2266, 82, 217, 4, 84, "Section",ExpressionUUID->"fd7bc927-8103-49ee-9f59-62398c6c6797"],
+Cell[2486, 88, 2027, 59, 117, "Text",ExpressionUUID->"5a95218d-b740-4c7b-b53c-cc28646bd023"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
