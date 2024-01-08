@@ -1,0 +1,241 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7238,        233]
+NotebookOptionsPosition[      6495,        214]
+NotebookOutlinePosition[      6915,        231]
+CellTagsIndexPosition[      6872,        228]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["Convert a transfer function into a difference equation.", "Text",
+ CellChangeTimes->{{3.8481096129306736`*^9, 
+  3.8481096227696195`*^9}},ExpressionUUID->"e954cdb5-1db2-437d-9c1f-\
+4e40265041e7"],
+
+Cell[TextData[{
+ "Consider the discrete transfer function of a first order filter converted \
+using the ZOH technique with ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"T", "=", 
+    RowBox[{"1", "/", "5"}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "23cfb7ab-fa35-4c9b-aa7d-2fb0405e35cc"],
+ ".\n\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     SubscriptBox["G", "z"], "(", "z", ")"}], "=", 
+    FractionBox["0.1813", 
+     RowBox[{"z", "-", "0.8187"}]]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "89e80343-3ba2-4e86-8e64-08af52e11a66"]
+}], "Text",
+ CellChangeTimes->{{3.848109624308406*^9, 3.84810963702649*^9}, {
+  3.8481097315303063`*^9, 3.848109738465107*^9}, {3.848109861026611*^9, 
+  3.8481098906706047`*^9}},ExpressionUUID->"6df2f10d-36b5-43f5-a28c-\
+dd198b8cb50d"],
+
+Cell[TextData[{
+ "We can divide numerator and denominator by ",
+ Cell[BoxData[
+  FormBox["z", TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "4697d474-3866-4efa-934a-59385578ccb6"],
+ "\n\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     SubscriptBox["G", "z"], "(", "z", ")"}], "=", 
+    FractionBox[
+     RowBox[{"0.1813", " ", 
+      SuperscriptBox["z", 
+       RowBox[{"-", "1"}]]}], 
+     RowBox[{"1", "-", 
+      RowBox[{"0.8187", " ", 
+       SuperscriptBox["z", 
+        RowBox[{"-", "1"}]]}]}]]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "3dde8c05-1a91-487e-bd90-52a436d13bd6"]
+}], "Text",
+ CellChangeTimes->{{3.8481098984418716`*^9, 3.8481099080667257`*^9}, {
+   3.848109982169278*^9, 3.8481100848860846`*^9}, {3.848110220643157*^9, 
+   3.848110248232165*^9}, 3.8481120731338053`*^9, {3.8481121077781553`*^9, 
+   3.8481121103810005`*^9}},ExpressionUUID->"45918e50-ac20-4417-9f71-\
+9eed4b4e5b7b"],
+
+Cell[TextData[{
+ "This can alternatively be written in a format where it is easy to generate \
+a Simulink \[OpenCurlyQuote]Discrete Filter\[CloseCurlyQuote]\n\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     SubscriptBox["G", "z"], "(", "z", ")"}], "=", 
+    FractionBox[
+     RowBox[{"0", "+", 
+      RowBox[{"0.1813", " ", 
+       SuperscriptBox["z", 
+        RowBox[{"-", "1"}]]}]}], 
+     RowBox[{"1", "-", 
+      RowBox[{"0.8187", " ", 
+       SuperscriptBox["z", 
+        RowBox[{"-", "1"}]]}]}]]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "c92fafd5-95bf-48c7-a70d-d722a21e7b91"],
+ "\n\t\n",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["G", 
+     RowBox[{"z", ",", "num"}]], "=", 
+    RowBox[{"(", GridBox[{
+       {"0", "0.1813"}
+      }], ")"}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "c80eaaf0-2d28-4364-a051-e5faf37a5da0"],
+ "\n",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["G", 
+     RowBox[{"z", ",", "den"}]], "=", 
+    RowBox[{"(", GridBox[{
+       {"1", 
+        RowBox[{"-", "0.8187"}]}
+      }], ")"}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "57a45b51-7a3b-4246-98ac-ccddae0681c6"],
+ "\t "
+}], "Text",
+ CellChangeTimes->{{3.848112077682482*^9, 
+  3.848112149617609*^9}},ExpressionUUID->"88090ca1-faa6-4831-a8f0-\
+4ab55ff6486f"],
+
+Cell[TextData[{
+ "We can convert this to a difference equation\n\t\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"Y", "(", "z", ")"}], 
+     RowBox[{"U", "(", "z", ")"}]], "=", 
+    FractionBox[
+     RowBox[{"0.1813", " ", 
+      SuperscriptBox["z", 
+       RowBox[{"-", "1"}]]}], 
+     RowBox[{"1", "-", 
+      RowBox[{"0.8187", " ", 
+       SuperscriptBox["z", 
+        RowBox[{"-", "1"}]]}]}]]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "f06327a2-db2f-4b1a-b78e-58c851cae286"],
+ "\n\t\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     RowBox[{"Y", "(", "z", ")"}], 
+     RowBox[{"(", 
+      RowBox[{"1", "-", 
+       RowBox[{"0.8187", " ", 
+        SuperscriptBox["z", 
+         RowBox[{"-", "1"}]]}]}], ")"}]}], "=", 
+    RowBox[{
+     RowBox[{"U", "(", "z", ")"}], 
+     RowBox[{"(", 
+      RowBox[{"0.1813", " ", 
+       SuperscriptBox["z", 
+        RowBox[{"-", "1"}]]}], ")"}]}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "eb5c92ba-a1e0-486b-99bd-3ab43493c894"],
+ "\n\t\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     RowBox[{"Y", "(", "z", ")"}], "-", 
+     RowBox[{"0.8187", " ", 
+      SuperscriptBox["z", 
+       RowBox[{"-", "1"}]], 
+      RowBox[{"Y", "(", "z", ")"}]}]}], "=", 
+    RowBox[{"0.1813", " ", 
+     SuperscriptBox["z", 
+      RowBox[{"-", "1"}]], 
+     RowBox[{"U", "(", "z", ")"}]}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "059fcf13-d456-4671-9a86-999e30f3f412"],
+ "\n\t\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     RowBox[{"y", "(", "k", ")"}], "-", 
+     RowBox[{"0.8187", " ", 
+      RowBox[{"y", "(", 
+       RowBox[{"k", "-", "1"}], ")"}]}]}], "=", 
+    RowBox[{"0.1813", " ", 
+     RowBox[{"u", "(", 
+      RowBox[{"k", "-", "1"}], ")"}]}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "36099d5c-ed94-4b44-9d42-438e5069424d"],
+ "\n\t\n\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"y", "(", "k", ")"}], "=", 
+    RowBox[{
+     RowBox[{"0.1813", " ", 
+      RowBox[{"u", "(", 
+       RowBox[{"k", "-", "1"}], ")"}]}], "+", 
+     RowBox[{"0.8187", " ", 
+      RowBox[{"y", "(", 
+       RowBox[{"k", "-", "1"}], ")"}]}]}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "2802f07d-c6d9-441a-817a-eb083eb0fdff"]
+}], "Text",
+ CellChangeTimes->{{3.8481120735866556`*^9, 3.8481120747305484`*^9}, {
+  3.8481121536727943`*^9, 
+  3.848112175682974*^9}},ExpressionUUID->"1665e991-fb87-423b-9e0d-\
+851522380d35"]
+},
+WindowSize->{573, 645},
+WindowMargins->{{Automatic, 230}, {332, Automatic}},
+Magnification->1.25,
+FrontEndVersion->"12.3 for Microsoft Windows (64-bit) (July 9, 2021)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"f9f9f4dc-32c1-42d6-a408-e50dc6d8aa2f"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 201, 3, 44, "Text",ExpressionUUID->"e954cdb5-1db2-437d-9c1f-4e40265041e7"],
+Cell[762, 25, 837, 23, 136, "Text",ExpressionUUID->"6df2f10d-36b5-43f5-a28c-dd198b8cb50d"],
+Cell[1602, 50, 965, 27, 115, "Text",ExpressionUUID->"45918e50-ac20-4417-9f71-9eed4b4e5b7b"],
+Cell[2570, 79, 1370, 46, 231, "Text",ExpressionUUID->"88090ca1-faa6-4831-a8f0-4ab55ff6486f"],
+Cell[3943, 127, 2548, 85, 346, "Text",ExpressionUUID->"1665e991-fb87-423b-9e0d-851522380d35"]
+}
+]
+*)
+
