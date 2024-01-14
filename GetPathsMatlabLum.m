@@ -13,6 +13,7 @@ function [PATHS] = GetPathsMatlabLum()
 
 %Version History
 %11/23/23: Created
+%01/14/24: Added Mapping
 
 REPO_DIR = fileparts(mfilename('fullpath'));
 
@@ -24,6 +25,10 @@ PATHS{end+1,1} = [REPO_DIR,'\SDK\AIML'];
 
 %Graphics
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Graphics'];
+
+%Mapping
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Mapping'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Mapping\MicaSense'];
 
 %Misc
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Misc'];
