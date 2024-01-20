@@ -14,6 +14,7 @@ function [PATHS] = GetPathsMatlabLum()
 %Version History
 %11/23/23: Created
 %01/14/24: Added Mapping
+%01/20/24: Added Simulink
 
 REPO_DIR = fileparts(mfilename('fullpath'));
 
@@ -35,6 +36,22 @@ PATHS{end+1,1} = [REPO_DIR,'\SDK\Misc'];
 
 %Probability
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Probability'];
+
+%Simulink
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset\AircraftModels'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset\AircraftModels\PlanarVehicleResources'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset\AircraftModels\PlanarVehicleResources\Simulink3D'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset\AircraftModels\QuadRotorResources'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset\AircraftModels\QuadRotorResources\ParrotSimulink3D'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset\AircraftModels\RCAMResources'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset\BlocksetFunctions'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset\LumAerospaceBlocksetResources'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumArduinoBlockset'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumControlsBlockset'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumMiscBlockset'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumSimulink3DAnimationBlockset'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumSimulink3DAnimationBlockset\resources'];
 
 %-------------------------THIRD PARTY CODE---------------------------------
 %Real-time blockset
