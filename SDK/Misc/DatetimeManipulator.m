@@ -121,31 +121,150 @@ classdef DatetimeManipulator
             
             %Version History
             %07/21/24: Created
+            %07/31/24: Fixed odditiy in variable name
             
             %------------------OBTAIN USER PREFERENCES---------------------
             switch nargin
                 case 2
                     %User supplies all inputs
-                    datetimedatetimeArray   = varargin{1};
-                    datetimeStart           = varargin{2};
+                    datetimeArray = varargin{1};
+                    datetimeStart = varargin{2};
                     
                 otherwise
                     error('Invalid number of inputs for constructor');
             end
 
             %------------------CHECKING DATA FORMAT------------------------
-            assert(isa(datetimedatetimeArray,'datetime'),'datetimedatetimeArray should be a datetime object')
+            assert(isa(datetimeArray,'datetime'),'datetimeArray should be a datetime object')
             assert(isa(datetimeStart,'datetime'),'datetimeStart should be a datetime object')
             
             %--------------------BEGIN CALCULATIONS------------------------
-            deltaTArray_days = zeros(size(datetimedatetimeArray));
-            for k=1:length(datetimedatetimeArray)
-                d = duration(datetimedatetimeArray(k) - datetimeStart);
+            deltaTArray_days = zeros(size(datetimeArray));
+            for k=1:length(datetimeArray)
+                d = duration(datetimeArray(k) - datetimeStart);
                 deltaTArray_days(k) = days(d);
             end
 
             %Output objects
             varargout{1} = deltaTArray_days;
+        end
+
+        function [varargout] = FindNearestDate(varargin)
+            %FindNearestDate Finds the nearest date
+            %
+            %   [datetimeNearest,indexNearest] =
+            %   FindNearestDate(datetimeArray,datetimeDesired) finds the
+            %   datetime object in the array datetimeArray that is closest
+            %   to datetimeDesired.
+            %
+            %INPUT:     -datetimeArray:     array of datetime objects
+            %           -datetimeDesired:   desired date
+            %
+            %OUTPUT:    -datetimeNearest:   nearest date
+            %           -indexNearest:      index where nerest date occurs
+            %
+            %Christopher Lum
+            %lum@uw.edu
+            
+            %Version History
+            %07/31/24: Created
+            
+            %------------------OBTAIN USER PREFERENCES---------------------
+            switch nargin
+                case 2
+                    %User supplies all inputs
+                    datetimeArray   = varargin{1};
+                    datetimeDesired = varargin{2};
+                    
+                otherwise
+                    error('Invalid number of inputs for constructor');
+            end
+
+            %------------------CHECKING DATA FORMAT------------------------
+            assert(isa(datetimeArray,'datetime'),'datetimeArray should be a datetime object')
+            assert(isa(datetimeDesired,'datetime'),'datetimeDesired should be a datetime object')
+            
+            %--------------------BEGIN CALCULATIONS------------------------
+            datetimeNearest = [];
+            indexNearest    = [];
+            minDeltaT_s     = Inf;
+            for k=1:length(datetimeArray)
+                d = duration(datetimeArray(k) - datetimeDesired);
+                DeltaT_s = abs(seconds(d));
+
+                if(DeltaT_s < minDeltaT_s)
+                    datetimeNearest = datetimeArray(k);
+                    indexNearest    = k;
+                    minDeltaT_s     = DeltaT_s;
+                end
+
+            end
+
+            %Output objects
+            varargout{1} = datetimeNearest;
+            varargout{2} = indexNearest;
+        end
+
+        function [varargout] = FindDatesInRange(varargin)
+            %FindDatesInRange Finds the dates in the specified range
+            %
+            %   [dates,indices] =
+            %   FindDatesInRange(datetimeArray,datetimeStart,datetimeEnd)
+            %   finds the indices in the datetimeArray that are in the
+            %   range of [datetimeStart,datetimeEnd].
+            %
+            %INPUT:     -datetimeArray:     array of datetime objects
+            %           -datetimeStart:     start date
+            %           -datetimeEnd:       end date
+            %
+            %OUTPUT:    -dates:             array of dates in the range
+            %           -indices:           indices
+            %
+            %Christopher Lum
+            %lum@uw.edu
+            
+            %Version History
+            %07/31/24: Created
+            
+            %------------------OBTAIN USER PREFERENCES---------------------
+            switch nargin
+                case 3
+                    %User supplies all inputs
+                    datetimeArray   = varargin{1};
+                    datetimeStart   = varargin{2};
+                    datetimeEnd     = varargin{3};
+
+                otherwise
+                    error('Invalid number of inputs for constructor');
+            end
+
+            %------------------CHECKING DATA FORMAT------------------------
+            assert(isa(datetimeArray,'datetime'),'datetimeArray should be a datetime object')
+            assert(isa(datetimeStart,'datetime'),'datetimeStart should be a datetime object')
+            assert(isa(datetimeEnd,'datetime'),'datetimeEnd should be a datetime object')
+            
+            %--------------------BEGIN CALCULATIONS------------------------
+            %Convert datetime to seconds
+            dates   = [];
+            indices = [];
+
+            datetimeEndLinear_s = seconds(duration(datetimeEnd - datetimeStart));
+            assert(datetimeEndLinear_s>0,'datetimeStart appears to occur after datetimeEnd');
+
+            for k=1:length(datetimeArray)
+                datetime_k = datetimeArray(k);
+                d = duration(datetime_k - datetimeStart);
+                t_s = seconds(d);
+
+                if(LumFunctionsMisc.IsObjectInRange(t_s,0,datetimeEndLinear_s))
+                    dates = [dates;datetime_k]; %can't concatenate using (end+1) index specification
+                    indices(end+1,1) = k;
+                end
+            end
+
+            %Output objects
+            varargout{1} = dates;
+            varargout{2} = indices;
         end
 
     end

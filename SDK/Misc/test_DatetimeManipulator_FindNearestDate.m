@@ -1,0 +1,21 @@
+classdef test_DatetimeManipulator_FindNearestDate < matlab.unittest.TestCase
+    %Version History: 07/31/24: Created
+
+    methods(Test)
+        function example01(tc)
+            datetimeArray = [
+                datetime('09/23/2024')
+                datetime('10/23/2024')
+                datetime('12/23/2024')
+                datetime('03/23/2025')
+                ];
+
+            datetimeDesired = datetime('12/10/2024');
+            [datetimeNearest,indexNearest] = DatetimeManipulator.FindNearestDate(datetimeArray,datetimeDesired);
+
+            indexNearest_expected = 3;
+
+            tc.verifyTrue(indexNearest==indexNearest_expected)
+        end
+    end
+end
