@@ -1,5 +1,12 @@
 classdef test_TableManipulator_RemoveUnusedCategories < matlab.unittest.TestCase
-    %Version History: 07/31/24: Converted to a matlab unit test
+    %Test the TableManipulator.RemoveUnusedCategories function
+    %
+    %Christopher Lum
+    %lum@uw.edu
+
+    %Version History
+    %07/31/24: Converted to a matlab unit test
+    %08/03/24: Modified documentation 
 
     methods(Test)
         function example01(tc)

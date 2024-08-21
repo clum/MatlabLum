@@ -1,23 +1,21 @@
-function [varargout] = ConvertLatLonDecimalToDegMinSec(varargin)
+function [varargout] = ConvertLatLonDecimalToDegMin(varargin)
 
-%CONVERTLATLONDECIMALTODEGMINSEC  Converts decimal to deg, min, sec
+%CONVERTLATLONDECIMALTODEGMINSEC  Converts decimal to deg, min
 %
-%   [DEGREES, MINUNTES, SECONDS] =
+%   [DEGREES, MINUNTES] =
 %   CONVERTLATLONDECIMALTODEGMINSEC(COORDINATE) Convert the lat/lon
-%   COORDINATE (given in decimal form) to DEGREES, MINUTES, SECONDS.
+%   COORDINATE (given in decimal form) to DEGREES, MINUTES.
 %
 %INPUT:     -COORDINATE:    lat/lon coordinate in decimal form (deg)
 %
 %OUTPUT:    -DEGREES:       degrees (integer in range [-180,180] )
-%           -MINUTES:       minutes (integer in range (-60, 60) )
-%           -SECONDS        seconds (decimal in range (-60, 60) )
+%           -MINUTES:       minutes (decimal in range (-60, 60) )
 %
 %Christopher Lum
 %lum@uw.edu
 
 %Version History
-%04/10/08: Created
-%01/14/24: Updated documentation
+%08/20/24: Created
 
 %----------------------OBTAIN USER PREFERENCES-----------------------------
 switch nargin
@@ -40,21 +38,12 @@ DEGREES = fix(COORDINATE);
 
 %Compute the minutes
 decimal = abs(COORDINATE - DEGREES);
-MINUTES = floor(decimal*60);
+MINUTES = decimal*60;
 
 if((DEGREES == 0) && (COORDINATE < 0))
     MINUTES = -1*MINUTES;
 end
 
-%Compute seconds
-seconds_decimal = decimal - abs(MINUTES/60);
-SECONDS         = seconds_decimal*3600;
-
-if((DEGREES == 0) && (MINUTES == 0) && (COORDINATE < 0))
-    SECONDS = -1*SECONDS;
-end
-
 %Output the object
 varargout{1} = DEGREES;
 varargout{2} = MINUTES;
-varargout{3} = SECONDS;

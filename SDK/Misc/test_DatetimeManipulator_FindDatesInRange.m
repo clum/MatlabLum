@@ -1,5 +1,12 @@
 classdef test_DatetimeManipulator_FindDatesInRange < matlab.unittest.TestCase
-    %Version History: 07/31/24: Created
+    %Test the DatetimeManipulator.FindDatesInRange function
+    %
+    %Christopher Lum
+    %lum@uw.edu
+
+    %Version History
+    %07/31/24: Created
+    %08/03/24: Modified documentation
 
     methods(Test)
         %Standard example

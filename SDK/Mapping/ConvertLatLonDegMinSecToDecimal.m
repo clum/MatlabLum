@@ -10,7 +10,7 @@ function [varargout] = ConvertLatLonDegMinSecToDecimal(varargin)
 %           -MINUTES:       minutes (integer in range (-60, 60) )
 %           -SECONDS        seconds (decimal in range (-60, 60) )
 %
-%OUTPUT:    -COORDINATE:    lat/lon coordinate in decimal form
+%OUTPUT:    -COORDINATE:    lat/lon coordinate in decimal form (deg)
 %
 %Christopher Lum
 %lum@uw.edu
