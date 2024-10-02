@@ -6,6 +6,7 @@ classdef DatetimeManipulator
     
     %Version History
     %07/21/24: Created
+    %10/01/24: Added FindDatesAfter
 
     %----------------------------------------------------------------------
     %Public properties/fields
@@ -69,33 +70,9 @@ classdef DatetimeManipulator
         end
         
         %Get/Set
-%         function obj = set.mMass(obj, mass)
-%             assert(mass > 0);
-%             obj.mMass = mass;
-%         end
-%      
-%         function obj = set.mDamping(obj, damping)
-%             assert(damping > 0);
-%             obj.mDamping = damping;
-%         end
                 
         %Class API
-        function [] = display(obj)
-            %DISPLAY  Define how object is displayed in the command window
-            %
-            %   DISPLAY() defines how the object is displayed in the
-            %   command window.
-            %
-            %INPUT:     -None
-            %
-            %Created by Christopher Lum
-            %lum@uw.edu
-            
-            %Version History
-            %MM/DD/YY: Created
-%             disp(['mMass: ',obj.mTimeHistory])
-        end
-        
+       
     end
     
     %----------------------------------------------------------------------
@@ -257,6 +234,62 @@ classdef DatetimeManipulator
                 t_s = seconds(d);
 
                 if(LumFunctionsMisc.IsObjectInRange(t_s,0,datetimeEndLinear_s))
+                    dates = [dates;datetime_k]; %can't concatenate using (end+1) index specification
+                    indices(end+1,1) = k;
+                end
+            end
+
+            %Output objects
+            varargout{1} = dates;
+            varargout{2} = indices;
+        end
+
+        function [varargout] = FindDatesOnOrAfter(varargin)
+            %FindDatesOnOrAfter Finds dates on or after the specified date
+            %
+            %   [dates,indices] =
+            %   FindDatesOnOrAfter(datetimeArray,datetimeStart) finds the
+            %   indices in the datetimeArray that are on or after the
+            %   datetimeStart.
+            %
+            %INPUT:     -datetimeArray:     array of datetime objects
+            %           -datetimeStart:     start date
+            %
+            %OUTPUT:    -dates:             array of dates that match
+            %           -indices:           indices
+            %
+            %Christopher Lum
+            %lum@uw.edu
+            
+            %Version History
+            %10/01/24: Created
+            
+            %--------fgvb----------OBTAIN USER PREFERENCES---------------------
+            switch nargin
+                case 2
+                    %User supplies all inputs
+                    datetimeArray   = varargin{1};
+                    datetimeStart   = varargin{2};
+                    
+                otherwise
+                    error('Invalid number of inputs for constructor');
+            end
+
+            %------------------CHECKING DATA FORMAT------------------------
+            assert(isa(datetimeArray,'datetime'),'datetimeArray should be a datetime object')
+            assert(isa(datetimeStart,'datetime'),'datetimeStart should be a datetime object')
+            
+            %--------------------BEGIN CALCULATIONS------------------------
+            %Convert datetime to seconds
+            dates   = [];
+            indices = [];
+
+            for k=1:length(datetimeArray)
+                datetime_k = datetimeArray(k);
+                d = duration(datetime_k - datetimeStart);
+                t_s = seconds(d);
+
+                if(t_s >= 0)
                     dates = [dates;datetime_k]; %can't concatenate using (end+1) index specification
                     indices(end+1,1) = k;
                 end
