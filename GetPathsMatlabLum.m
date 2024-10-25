@@ -15,6 +15,7 @@ function [PATHS] = GetPathsMatlabLum()
 %11/23/23: Created
 %01/14/24: Added Mapping
 %01/20/24: Added Simulink
+%10/24/24: Added Simulation
 
 REPO_DIR = fileparts(mfilename('fullpath'));
 
@@ -36,6 +37,10 @@ PATHS{end+1,1} = [REPO_DIR,'\SDK\Misc'];
 
 %Probability
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Probability'];
+
+%Simulation
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulation\FlightPatterns'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulation\OccupancyMap'];
 
 %Simulink
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumAerospaceBlockset'];
