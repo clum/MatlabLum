@@ -3,24 +3,25 @@ classdef DatetimeManipulator
     %
     %Christopher Lum
     %lum@uw.edu
-    
+
     %Version History
     %07/21/24: Created
     %10/01/24: Added FindDatesAfter
+    %10/23/24: Added FromExcelTime
 
     %----------------------------------------------------------------------
     %Public properties/fields
     %----------------------------------------------------------------------
     properties (GetAccess='public', SetAccess='public')
         datetimeobj;
-    end   
-    
+    end
+
     %----------------------------------------------------------------------
     %Private properties/fields
     %----------------------------------------------------------------------
     properties (GetAccess='private', SetAccess='private')
     end
-    
+
     %----------------------------------------------------------------------
     %Public Dependent properties/fields
     %----------------------------------------------------------------------
@@ -44,37 +45,37 @@ classdef DatetimeManipulator
             %
             %Christopher Lum
             %lum@uw.edu
-            
+
             %Version History
             %07/21/24: Created
-            
+
             %------------------OBTAIN USER PREFERENCES---------------------
             switch nargin
                 case 1
                     %User supplies all inputs
                     datetimeobj = varargin{1};
-                    
+
                 otherwise
                     error('Invalid number of inputs for constructor');
             end
 
             %------------------CHECKING DATA FORMAT------------------------
             assert(isa(datetimeobj,'datetime'),'datetimeobj should be a datetime object')
-            
+
             %--------------------BEGIN CALCULATIONS------------------------
             obj.datetimeobj = datetimeobj;
         end
-        
+
         %Destructor
         function delete(obj)
         end
-        
+
         %Get/Set
-                
+
         %Class API
-       
+
     end
-    
+
     %----------------------------------------------------------------------
     %Static methods
     %----------------------------------------------------------------------
@@ -95,18 +96,18 @@ classdef DatetimeManipulator
             %
             %Christopher Lum
             %lum@uw.edu
-            
+
             %Version History
             %07/21/24: Created
             %07/31/24: Fixed odditiy in variable name
-            
+
             %------------------OBTAIN USER PREFERENCES---------------------
             switch nargin
                 case 2
                     %User supplies all inputs
                     datetimeArray = varargin{1};
                     datetimeStart = varargin{2};
-                    
+
                 otherwise
                     error('Invalid number of inputs for constructor');
             end
@@ -114,7 +115,7 @@ classdef DatetimeManipulator
             %------------------CHECKING DATA FORMAT------------------------
             assert(isa(datetimeArray,'datetime'),'datetimeArray should be a datetime object')
             assert(isa(datetimeStart,'datetime'),'datetimeStart should be a datetime object')
-            
+
             %--------------------BEGIN CALCULATIONS------------------------
             deltaTArray_days = zeros(size(datetimeArray));
             for k=1:length(datetimeArray)
@@ -142,17 +143,17 @@ classdef DatetimeManipulator
             %
             %Christopher Lum
             %lum@uw.edu
-            
+
             %Version History
             %07/31/24: Created
-            
+
             %------------------OBTAIN USER PREFERENCES---------------------
             switch nargin
                 case 2
                     %User supplies all inputs
                     datetimeArray   = varargin{1};
                     datetimeDesired = varargin{2};
-                    
+
                 otherwise
                     error('Invalid number of inputs for constructor');
             end
@@ -160,7 +161,7 @@ classdef DatetimeManipulator
             %------------------CHECKING DATA FORMAT------------------------
             assert(isa(datetimeArray,'datetime'),'datetimeArray should be a datetime object')
             assert(isa(datetimeDesired,'datetime'),'datetimeDesired should be a datetime object')
-            
+
             %--------------------BEGIN CALCULATIONS------------------------
             datetimeNearest = [];
             indexNearest    = [];
@@ -199,10 +200,10 @@ classdef DatetimeManipulator
             %
             %Christopher Lum
             %lum@uw.edu
-            
+
             %Version History
             %07/31/24: Created
-            
+
             %------------------OBTAIN USER PREFERENCES---------------------
             switch nargin
                 case 3
@@ -219,7 +220,7 @@ classdef DatetimeManipulator
             assert(isa(datetimeArray,'datetime'),'datetimeArray should be a datetime object')
             assert(isa(datetimeStart,'datetime'),'datetimeStart should be a datetime object')
             assert(isa(datetimeEnd,'datetime'),'datetimeEnd should be a datetime object')
-            
+
             %--------------------BEGIN CALCULATIONS------------------------
             %Convert datetime to seconds
             dates   = [];
@@ -260,17 +261,17 @@ classdef DatetimeManipulator
             %
             %Christopher Lum
             %lum@uw.edu
-            
+
             %Version History
             %10/01/24: Created
-            
-            %--------fgvb----------OBTAIN USER PREFERENCES---------------------
+
+            %------------------OBTAIN USER PREFERENCES---------------------
             switch nargin
                 case 2
                     %User supplies all inputs
                     datetimeArray   = varargin{1};
                     datetimeStart   = varargin{2};
-                    
+
                 otherwise
                     error('Invalid number of inputs for constructor');
             end
@@ -278,7 +279,7 @@ classdef DatetimeManipulator
             %------------------CHECKING DATA FORMAT------------------------
             assert(isa(datetimeArray,'datetime'),'datetimeArray should be a datetime object')
             assert(isa(datetimeStart,'datetime'),'datetimeStart should be a datetime object')
-            
+
             %--------------------BEGIN CALCULATIONS------------------------
             %Convert datetime to seconds
             dates   = [];
@@ -300,7 +301,35 @@ classdef DatetimeManipulator
             varargout{2} = indices;
         end
 
-    end
-    
-end
+        function [t] = FromExcelTime(tExcel)
+            %FromExcelTime Convert an Excel time to a datetime object
+            %
+            %   [t] = FromExcelTime(tExcel) converts a Excel time (a number
+            %   that represents the number of days that have passed since
+            %   January 1, 1900).
+            %
+            %   See https://www.mathworks.com/help/exlink/convert-dates-between-microsoft-excel-and-matlab.html
+            %
+            %INPUT:     -tExcel:    number of days since Jan 1, 1900
+            %
+            %OUTPUT:    -t:         datetime object
+            %
+            %Christopher Lum
+            %lum@uw.edu
 
+            %Version History
+            %10/23/24: Created
+
+            %------------------CHECKING DATA FORMAT------------------------
+
+            %--------------------BEGIN CALCULATIONS------------------------
+            Y = 0;
+            M = 0;
+            D = tExcel + 693960 + 31;       %CL: I had to add 31 days to make this match
+            
+            t = datetime(Y,M,D);
+        end
+
+    end
+
+end
