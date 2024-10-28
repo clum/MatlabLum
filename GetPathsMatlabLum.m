@@ -56,7 +56,7 @@ PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumArduinoBlockset'];
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumControlsBlockset'];
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumMiscBlockset'];
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumSimulink3DAnimationBlockset'];
-PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumSimulink3DAnimationBlockset\resources'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Simulink\LumSimulink3DAnimationBlockset\backgrounds'];
 
 %-------------------------THIRD PARTY CODE---------------------------------
 %Real-time blockset
