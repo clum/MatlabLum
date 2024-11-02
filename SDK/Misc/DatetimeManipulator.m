@@ -104,7 +104,7 @@ classdef DatetimeManipulator
 
             %------------------CHECKING DATA FORMAT------------------------
             assert(dateLatest>=dateEarliest,'dateLatest should be after dateEarliest')
-            
+
             %--------------------BEGIN CALCULATIONS------------------------
             %Find the month that is closest to the earliest date
             dateEarliestShifted = dateshift(dateEarliest,'start','month');
@@ -385,6 +385,35 @@ classdef DatetimeManipulator
             D = tExcel + 693960 + 31;       %CL: I had to add 31 days to make this match
 
             t = datetime(Y,M,D);
+        end
+
+        function [IsMono] = IsArrayMonotonicallyIncreasing(datetimeArray)
+            %IsArrayMonotonicallyIncreasing Is monotonically increasing
+            %
+            %   [IsMono] = IsArrayMonotonicallyIncreasing (datetimeArray)
+            %   checks if the array of datatime objects in monotonically
+            %   increasing or not.
+            %
+            %INPUT:     -datetimeArray: array of datetime objects
+            %
+            %OUTPUT:    -IsMono:        true if monotonically increasing
+            %
+            %Christopher Lum
+            %lum@uw.edu
+
+            %Version History
+            %11/02/24: Created
+
+            %------------------CHECKING DATA FORMAT------------------------
+            %datetimeArray
+            assert(isvector(datetimeArray),'datetimeArray must be a vector')
+            assert(isa(datetimeArray,'datetime'),'datetimeArray does not appear to be a datetime object')
+
+            %--------------------BEGIN CALCULATIONS------------------------
+            datetimeStart = datetimeArray(1);
+            deltaTArray_days = DatetimeManipulator.ConvertDateTimeArrayToLinear(datetimeArray,datetimeStart);
+
+            IsMono = IsMonotonicallyIncreasing(deltaTArray_days);
         end
 
     end

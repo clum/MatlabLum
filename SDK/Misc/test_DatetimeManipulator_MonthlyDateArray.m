@@ -16,11 +16,11 @@ classdef test_DatetimeManipulator_MonthlyDateArray < matlab.unittest.TestCase
             [monthlyDates] = DatetimeManipulator.MonthlyDateArray(dateEarliest,dateLatest);
 
             monthlyDatesExpected = [
-                datetime('09/01/2024')
-                datetime('10/01/2024')
-                datetime('11/01/2024')
-                datetime('12/01/2024')
-                datetime('01/01/2025')
+                datetime('09/01/2024','InputFormat','MM/dd/yyyy')
+                datetime('10/01/2024','InputFormat','MM/dd/yyyy')
+                datetime('11/01/2024','InputFormat','MM/dd/yyyy')
+                datetime('12/01/2024','InputFormat','MM/dd/yyyy')
+                datetime('01/01/2025','InputFormat','MM/dd/yyyy')
                 ];
 
             tc.verifyTrue(AreMatricesSame(monthlyDates,monthlyDatesExpected));
