@@ -80,6 +80,63 @@ classdef DatetimeManipulator
     %Static methods
     %----------------------------------------------------------------------
     methods(Static)
+        function [monthlyDates] = MonthlyDateArray(dateEarliest,dateLatest)
+            %MonthlyDateArray computes monthly dates in the specified range
+            %
+            %   [monthlyDates] = MonthlyDateArray(dateEarliest,dateLatest)
+            %   computes an array of dates that are on the first of the
+            %   month between dateEarliest and dateLatest.  Note that the
+            %   monthlyDates array will encompass the range
+            %   [dateEarliest,dateLatest] which means that monthlyDates(1)
+            %   is on or earlier than dateEarliest and monthlyDates(end) is
+            %   on or later tha ndateLatest
+            %
+            %INPUT:     -dateEarliest: earliest date
+            %           -dateLatest: latest date
+            %
+            %OUTPUT:    -monthlyDates:  array of datetime objects
+            %
+            %Christopher Lum
+            %lum@uw.edu
+
+            %Version History
+            %10/23/24: Created
+
+            %------------------CHECKING DATA FORMAT------------------------
+            assert(dateLatest>=dateEarliest,'dateLatest should be after dateEarliest')
+            
+            %--------------------BEGIN CALCULATIONS------------------------
+            %Find the month that is closest to the earliest date
+            dateEarliestShifted = dateshift(dateEarliest,'start','month');
+            dateLatestShifted = dateshift(dateLatest,'end','month') + duration(24,0,0);
+
+            assert(dateEarliestShifted.Day==1,'Shifted date does not appear to start on first of the month')
+            assert(dateLatestShifted.Day==1,'Shifted date does not appear to start on first of the month')
+
+            monthlyDates = dateEarliestShifted;
+            while(1)
+                dateCurr = monthlyDates(end);
+
+                if(dateCurr.Month==12)
+                    dateNext = dateCurr;
+                    dateNext.Month = 1;
+                    dateNext.Year = dateCurr.Year+1;
+
+                else
+                    dateNext = dateCurr;
+                    dateNext.Month = dateCurr.Month+1;
+
+                end
+
+                %Check termination
+                if(dateNext > dateLatestShifted)
+                    break
+                else
+                    monthlyDates(end+1,1) = dateNext;
+                end
+            end
+        end
+
         function [varargout] = ConvertDateTimeArrayToLinear(varargin)
             %ConvertDateTimeArrayToLinear Converts to a linear time
             %
@@ -326,7 +383,7 @@ classdef DatetimeManipulator
             Y = 0;
             M = 0;
             D = tExcel + 693960 + 31;       %CL: I had to add 31 days to make this match
-            
+
             t = datetime(Y,M,D);
         end
 
