@@ -6,6 +6,7 @@ classdef TableManipulator
     
     %Version History
     %07/21/24: Created
+    %11/02/24: Added ContainsSpecifiedHeader
 
     %----------------------------------------------------------------------
     %Public properties/fields
@@ -73,16 +74,6 @@ classdef TableManipulator
         end
         
         %Get/Set
-%         function obj = set.mMass(obj, mass)
-%             assert(mass > 0);
-%             obj.mMass = mass;
-%         end
-%      
-%         function obj = set.mDamping(obj, damping)
-%             assert(damping > 0);
-%             obj.mDamping = damping;
-%         end
-        
         function value = get.VariableNames(obj)
             value = obj.T.Properties.VariableNames;
         end
@@ -95,23 +86,7 @@ classdef TableManipulator
             [~,value] = size(obj.T);
         end
                 
-        %Class API
-        function [] = display(obj)
-            %DISPLAY  Define how object is displayed in the command window
-            %
-            %   DISPLAY() defines how the object is displayed in the
-            %   command window.
-            %
-            %INPUT:     -None
-            %
-            %Created by Christopher Lum
-            %lum@uw.edu
-            
-            %Version History
-            %MM/DD/YY: Created
-%             disp(['mMass: ',obj.mTimeHistory])
-        end
-        
+        %Class API       
         function [varargout] = RemoveUnusedCategories(varargin)
             %RemoveUnusedCategories Removes unused categories from table
             %
@@ -158,6 +133,33 @@ classdef TableManipulator
             end
 
             varargout{1} = T2;
+        end
+
+        function [containsHeader] = ContainsSpecifiedHeader(obj,header)
+            %ContainsSpecifiedHeader Checks if table has specified header 
+            %
+            %   [containsHeader] = ContainsSpecifiedHeader(header) Checks
+            %   if table has the specified header.
+            %
+            %INPUT:     -header: specified header name
+            %
+            %OUTPUT:    -containsHeader:    true if table has header
+            %
+            %Christopher Lum
+            %lum@uw.edu
+            
+            %Version History
+            %11/02/24: Created
+            
+            %------------------OBTAIN USER PREFERENCES---------------------
+            
+            %------------------CHECKING DATA FORMAT------------------------
+            %header
+            assert(isa(header,'char'),'header should be a char')
+                        
+            %--------------------BEGIN CALCULATIONS------------------------
+            headers = obj.VariableNames;
+            containsHeader = ~isempty(find(strcmp(headers,header)==1));
         end
 
     end
