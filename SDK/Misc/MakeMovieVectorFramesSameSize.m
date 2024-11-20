@@ -16,6 +16,23 @@ function [RESIZED] = MakeMovieVectorFramesSameSize(MOVIE_VECTOR,options)
 %                              (default option)
 %                      'shrink' = cut frames down to the smallest frame
 %
+%   Example usage:
+%
+%       t = linspace(0,10,15);
+%       for k=1:length(t)
+%           tk = t(k);
+%           x = cos(tk);
+%           y = sin(tk);
+%           z = tk;
+% 
+%           plot3(x,y,z,'ro')
+%           axis([-5 5 -5 5 0 10])    
+% 
+%           movieVector = getframe;
+%       end
+% 
+%       movieVector = MakeMovieVectorFramesSameSize(movieVector,'method','shrink');
+%
 %INPUT:     -MOVIE_VECTOR:  Array of frames obtained using GETFRAME
 %
 %OUTPUT:    -RESIZED:       Array of frames with all the same size
