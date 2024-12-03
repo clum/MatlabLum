@@ -2,7 +2,7 @@ function y = Integrate(t,yd,y0)
 
 %INTEGRATE numerical integration
 %
-%   INTEGRATE(t,yd) integrates the function yd values which have
+%   [y] = INTEGRATE(t,yd) integrates the function yd values which have
 %   corresponding time vector, t.  This assumes that that y(0)=0.  This
 %   uses a simple backward rule integration given by
 %
@@ -10,10 +10,6 @@ function y = Integrate(t,yd,y0)
 %
 %   INTEGRATE(t,yd,y0) integrates as above, but uses y(0) = y0 as an
 %   initial condition
-%
-%   y = INTEGRATE(...) integrates as above and returns the vector of y, the
-%   integral of yd.
-%
 %
 %INPUT:     -t:     time vector
 %           -yd:    integrand vector
@@ -30,6 +26,7 @@ function y = Integrate(t,yd,y0)
 %04/05/04: Created
 %04/15/04: Changed outputs to column vectors
 %12/15/23: Moved to MatlabLum
+%11/23/24: Updating documentation
 
 %------------------CHECKING DATA FORMAT----------------------------
 if (nargin==1)

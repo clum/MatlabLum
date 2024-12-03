@@ -16,6 +16,7 @@ function [PATHS] = GetPathsMatlabLum()
 %01/14/24: Added Mapping
 %01/20/24: Added Simulink
 %10/24/24: Added Simulation
+%11/30/24: Added Conversions
 
 REPO_DIR = fileparts(mfilename('fullpath'));
 
@@ -24,6 +25,9 @@ PATHS = {};
 %-------------------------CUSTOM TOOLBOXES----------------------------
 %AIML
 PATHS{end+1,1} = [REPO_DIR,'\SDK\AIML'];
+
+%Conversions
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Conversions'];
 
 %Graphics
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Graphics'];
@@ -34,6 +38,7 @@ PATHS{end+1,1} = [REPO_DIR,'\SDK\Mapping\MicaSense'];
 
 %Misc
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Misc'];
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Misc\tableManipulator'];
 
 %Probability
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Probability'];
