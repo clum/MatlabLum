@@ -3,13 +3,15 @@
 %
 %Test the bitshift function
 
-%Version History:   12/27/16: Created
+%Version History
+%12/27/16: Created
+%12/03/24: Testing negative shifts
 
 clear
 clc
 close all
 
-%% Example 1 - Simple shift
+%% Example 1 - Simple shift (AKA << in C)
 disp('Example 1 (uint8)')
 X1 = uint8(7)
 Y1 = bitshift(X1,2)
@@ -43,5 +45,9 @@ Y6 = bitshift(X6,12)
 X7 = int16(13)
 Y7 = bitshift(X7, 8)
 Z7 = X7 + Y7
+
+%% Example 8 - Shift to the right (AKA >> in C)
+X8 = uint8(28)
+Y8 = bitshift(X8,-2)
 
 disp('DONE!')
