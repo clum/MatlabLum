@@ -8,18 +8,19 @@
 
 %Version History
 %12/13/24: Created
+%12/14/24: Changed pin numbers
 
 clear
 clc
 close all
 
 %% User selections
-PinLED_R = 'A4';
-PinLED_G = 'A5';
+PinLED_R = "D6";    %AKA pin 6
+PinLED_G = "D5";    %AKA pin 5
 
 %% Setup
 disp('Arduino setup')
-arduinoObj = arduino("COM4", "Nano3", Libraries = ["I2C","SPI","Servo"]);
+arduinoObj = arduino("COM4", "Nano3");
 
 configurePin(arduinoObj, PinLED_R, "DigitalOutput");
 configurePin(arduinoObj, PinLED_G, "DigitalOutput");
@@ -29,10 +30,10 @@ disp('Blinking LEDs')
 for k=1:5
     writeDigitalPin(arduinoObj,PinLED_R,1);
     writeDigitalPin(arduinoObj,PinLED_G,0);
-    pause(0.5)
+    pause(2)
     writeDigitalPin(arduinoObj,PinLED_R,0);
     writeDigitalPin(arduinoObj,PinLED_G,1);
-    pause(0.5)
+    pause(0.6)
 end
 
 %% Cleanup
