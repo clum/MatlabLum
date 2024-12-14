@@ -20,10 +20,13 @@ PinLED_G                    = 5;    %AKA D5
 T                           = 0.1;  %sample time of model
 tFinal                      = 5;
 repeatingPulsePeriod        = 1;    %period of pulse
-repeatingPulseWidthPercent  = 50;   %duty cycle
+repeatingPulseWidthPercent  = 70;   %duty cycle
 
 modelName = 'LEDBlinkTwoLEDs_model.slx';
 
+%% Open model
 open(modelName);
+
+disp('Run model via Hardware > Monitor & Tune')
 
 disp('DONE!')
