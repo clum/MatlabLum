@@ -1,30 +1,21 @@
-function [Y,Y_PRIME] = BitIs1(A,BitIndex)
+function [ret] = BitIs1(x,position)
 
-%BitIs1 Checks if the bit at a position is 1.
+%BitIs1 Determine if a bit is 1 or not.
 %
-%   [Is1] = BitIs1(A,BitIndex) Checks if the bit at position BitIndex is 1
-%   or not.
+%   [ret] = BitIs1(x,position) Checks if the bit at the specified position
+%   is 1 or not.
 %
-%   Note that BitIndex is 1-based meaning that BitIndex = 1 is the LSB (ie
-%   the bit in the farthest left position).
+%INPUT:     -x:         value to check
+%           -position:  0-based position in range [0,7]
+%                       (0 = 1st (LSB) bit, 7 = 8th (MSB) bit)
 %
-%INPUT:     -A:         value
-%           -BitIndex:  1-based index
-%
-%OUTPUT:    -Is1:       true if bit is 1, false otherwise
+%OUTPUT:    -ret:       true is bit at position is 1, false otherwise.
 %
 %Christopher Lum
 %lum@uw.edu
 
 %Version History
-%12/03/24: Created
+%12/17/24: Created
 
-%-----------------------CHECKING DATA FORMAT-------------------------------
-
-%----------------------OBTAIN USER PREFERENCES-----------------------------
-%A
-
-%BitIndex
-
-%-------------------------BEGIN CALCULATIONS-------------------------------
-%Create a mask
+shifted = bitshift(x,-position);
+ret = logical(bitand(shifted,0b00000001));
