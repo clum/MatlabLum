@@ -1,0 +1,9 @@
+classdef max31856_opencircuitdetectionmode_t
+    enumeration
+        MAX31856_OCDETECTIONMODE_DISABLED,
+        MAX31856_OCDETECTIONMODE_ENABLEDA,
+        MAX31856_OCDETECTIONMODE_ENABLEDB,
+        MAX31856_OCDETECTIONMODE_ENABLEDC
+    end
+
+end

@@ -1,0 +1,8 @@
+classdef max31856_conversionmode_t
+    enumeration
+        MAX31856_CONVERSIONMODE_ONESHOT,
+        MAX31856_CONVERSIONMODE_ONESHOTNOWAIT,
+        MAX31856_CONVERSIONMODE_CONTINUOUS
+    end
+
+end
