@@ -1,5 +1,5 @@
 %Christopher Lum
-%lum@u.washington.edu
+%lum@uw.edu
 %
 %Test the bitshift function
 

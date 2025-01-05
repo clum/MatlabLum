@@ -16,6 +16,9 @@ function [ret] = BitIs1(x,position)
 
 %Version History
 %12/17/24: Created
+%12/25/24: Updated to deal with cases where x is signed
+
+assert(isa(x,'uint8'),'Currently only supports unsigned values');
 
 shifted = bitshift(x,-position);
 ret = logical(bitand(shifted,0b00000001));

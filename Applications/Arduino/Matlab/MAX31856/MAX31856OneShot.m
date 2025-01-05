@@ -15,7 +15,7 @@ clc
 close all
 
 %% User selections
-N           = 5;     %number iterations
+N           = 30;     %number iterations
 outputFile  = 'MAX31856OneShotData_IDXX.mat';
 
 %% Global section of .ino code
@@ -45,11 +45,10 @@ MAX31856_LTCBM_REG_READ = hex2dec('0x0D');  %Linearized TC Temperature, Byte 1
 MAX31856_LTCBL_REG_READ = hex2dec('0x0E');  %Linearized TC Temperature, Byte 0
 
 disp('Arduino setup')
-
-pin_CS = "D10";
-
 a = arduino('COM4','Nano3');
 
+disp('SPI setup')
+pin_CS = "D10";
 SPIMaxSpeed_hz = 1000000;
 spiMode = 1;
 
