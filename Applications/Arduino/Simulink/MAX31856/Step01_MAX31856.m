@@ -18,7 +18,7 @@ close all
 modelName = 'MAX31856_model.slx';
 
 tFinal_s = 30;
-deltaT_s = 1;      %time step
+deltaT_s = 0.5;      %time step
 
 %% Global section of .ino code
 %CR0
@@ -30,7 +30,6 @@ MAX31856_CR1_REG_READ   = hex2dec('0x01');  %Config 1 register (read)
 MAX31856_CR1_REG_WRITE  = hex2dec('0x81');  %Config 1 register (write)
 
 %MASK (AKA Fault Mask Register)
-MAX31856_MASK_REG_READ  = hex2dec('0x02');  %Fault Mask register (read)
 MAX31856_MASK_REG_WRITE = hex2dec('0x82');  %Fault Mask register (write)
 
 %CJTO

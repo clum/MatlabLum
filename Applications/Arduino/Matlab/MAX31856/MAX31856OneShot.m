@@ -9,6 +9,7 @@
 %Version History
 %12/14/24: Created
 %12/17/24: Continued working
+%01/05/25: Removed unused register addresses
 
 clear
 clc
@@ -28,7 +29,6 @@ MAX31856_CR1_REG_READ   = hex2dec('0x01');  %Config 1 register (read)
 MAX31856_CR1_REG_WRITE  = hex2dec('0x81');  %Config 1 register (write)
 
 %MASK (AKA Fault Mask Register)
-MAX31856_MASK_REG_READ  = hex2dec('0x02');  %Fault Mask register (read)
 MAX31856_MASK_REG_WRITE = hex2dec('0x82');  %Fault Mask register (write)
 
 %CJTO
@@ -58,10 +58,10 @@ max31856SpiSettings.SPIMode = spiMode;
 
 %% Setup
 SetupMAX31856(max31856SpiSettings,...
-    MAX31856_MASK_REG_READ,MAX31856_MASK_REG_WRITE,...
+    MAX31856_MASK_REG_WRITE,...
     MAX31856_CR0_REG_READ,MAX31856_CR0_REG_WRITE,...
     MAX31856_CR1_REG_READ,MAX31856_CR1_REG_WRITE,...
-    MAX31856_CJTO_REG_READ,MAX31856_CJTO_REG_WRITE);
+    MAX31856_CJTO_REG_WRITE);
 
 disp('---------------------setup------------------')
 t0 = readRegister8(max31856SpiSettings,MAX31856_CR0_REG_READ);
