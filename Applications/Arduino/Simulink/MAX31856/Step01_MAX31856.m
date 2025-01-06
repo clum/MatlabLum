@@ -9,6 +9,7 @@
 %Version History
 %12/14/24: Created
 %12/19/24: Continued working after getting MATLAB version to work
+%01/05/25: Removing extraneous register addresses
 
 clear
 clc
@@ -17,8 +18,11 @@ close all
 %% User settings
 modelName = 'MAX31856_model.slx';
 
-tFinal_s = 30;
-deltaT_s = 0.5;      %time step
+tFinal_s = 15;
+% deltaT_s = 1/2;      %time step
+deltaT_s = 1/10;      %time step
+% deltaT_s = 1/20;      %time step
+% deltaT_s = 1/40;      %time step
 
 %% Global section of .ino code
 %CR0
