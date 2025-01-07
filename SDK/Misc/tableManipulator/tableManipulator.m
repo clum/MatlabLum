@@ -8,6 +8,7 @@ classdef tableManipulator
     %07/21/24: Created
     %11/02/24: Added ContainsSpecifiedHeader
     %11/21/24: Changing name of class
+    %01/06/25: Added MovingAverage
 
     %----------------------------------------------------------------------
     %Public properties/fields
@@ -162,6 +163,54 @@ classdef tableManipulator
             %--------------------BEGIN CALCULATIONS------------------------
             headers = obj.VariableNames;
             containsHeader = ~isempty(find(strcmp(headers,header)==1));
+        end
+        
+        function [TAve] = MovingAverage(obj,options)
+            %MovingAverage Calculates a moving average for each column
+            %
+            %   [TAve] = MovingAverage() Cycles through all the columns of the
+            %   table and performs a moving average using the specified
+            %   window.
+            %
+            %INPUT:     -None
+            %
+            %OUTPUT:    -TAve: Table with columns with moving average
+            %                  applied to numeric columns
+            %
+            %Christopher Lum
+            %lum@uw.edu
+            
+            %Version History
+            %01/06/25: Created
+            
+            arguments
+                obj                 (1,1) tableManipulator;
+                options.WindowSize  (1,1) double = 2;
+            end
+            
+            %------------------CHECKING DATA FORMAT------------------------
+            
+            %--------------------BEGIN CALCULATIONS------------------------
+            TAve = obj.T;
+            varNames = obj.VariableNames;
+
+            for k=1:obj.NumCols
+                varName = varNames{k};
+                col = TAve.(varName);
+
+                if(isnumeric(col))
+                    colAve = col;
+                    for n=options.WindowSize:length(col)
+                        %get the window
+                        window = col(n-options.WindowSize+1:n);
+                        
+                        %compute average
+                        colAve(n) = mean(window);
+                    end
+                    
+                    TAve.(varName) = colAve;
+                end
+            end
         end
 
     end
