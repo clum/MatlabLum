@@ -64,6 +64,7 @@ classdef tableConstants
             
             %Version History
             %11/21/24: Created
+            %01/06/25: Added Spending01 case
             
             switch ID
                 case tableID.Vehicles01
@@ -104,6 +105,23 @@ classdef tableConstants
 
                     T = table(Make,Model,Year,MSRP,Comment);
 
+                case tableID.Spending01
+                    seed = 0;
+                    rng(seed);
+                    
+                    t = [0:1:50]';
+                    dataA = t.^2 + 50*rand(length(t),1);
+                    dataB = 3*t + 40*rand(length(t),1);
+                    dataC = 300 + 30*sin(t)+30*rand(length(t),1) - 3*t;
+                    
+                    T = table(dataA,dataB,dataC);
+                    
+                    T.Properties.VariableNames = {
+                        '401K'
+                        'Commuting Fees'
+                        'Vacations'
+                        };
+                    
                 otherwise
                     error('Unsupported tableID')
             end

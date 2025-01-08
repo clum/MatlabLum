@@ -1,6 +1,7 @@
 classdef tableID
     %enum for tableID objects
     enumeration
-        Vehicles01
+        Vehicles01,
+        Spending01
     end
 end
