@@ -17,6 +17,7 @@ function [PATHS] = GetPathsMatlabLum()
 %01/20/24: Added Simulink
 %10/24/24: Added Simulation
 %11/30/24: Added Conversions
+%01/07/25: Added Controls
 
 REPO_DIR = fileparts(mfilename('fullpath'));
 
@@ -25,6 +26,9 @@ PATHS = {};
 %-------------------------CUSTOM TOOLBOXES----------------------------
 %AIML
 PATHS{end+1,1} = [REPO_DIR,'\SDK\AIML'];
+
+%Controls
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Controls'];
 
 %Conversions
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Conversions'];
