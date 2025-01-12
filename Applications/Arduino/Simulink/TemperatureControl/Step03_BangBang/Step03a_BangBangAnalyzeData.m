@@ -11,7 +11,8 @@ clc
 close all
 
 %% User settings
-inputFile  = 'BangBangSimulinkData_ID01.mat';
+inputFile  = 'BangBangSimulinkData_IDXX.mat';
+% inputFile  = 'BangBangSimulinkData_ID01.mat';
 
 %% Analyze data
 temp = load(inputFile);

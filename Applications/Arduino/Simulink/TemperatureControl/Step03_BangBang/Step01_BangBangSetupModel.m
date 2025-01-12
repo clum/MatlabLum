@@ -15,7 +15,7 @@ ChangeWorkingDirectoryToThisLocation();
 %% User settings
 modelName = 'BangBangModel.slx';
 
-tFinal_s = 5*60;
+tFinal_s = 7*60;
 % deltaT_s = 1/2;      %time step
 deltaT_s = 1/4;      %time step
 

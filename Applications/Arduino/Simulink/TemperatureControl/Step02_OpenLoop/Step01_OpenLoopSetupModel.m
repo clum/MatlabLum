@@ -15,7 +15,7 @@ ChangeWorkingDirectoryToThisLocation();
 %% User settings
 modelName = 'OpenLoopModel.slx';
 
-tFinal_s = 5*60;
+tFinal_s = 900;
 % deltaT_s = 1/2;      %time step
 deltaT_s = 1/4;      %time step
 
@@ -75,7 +75,27 @@ warning('Need to programatically set these in configuration settings.')
 %% PWM Output
 PinPWM  = 3;
 
-%% Compute parameters
+%% Open Loop Controller
+LUT_TemperatureBreakpoints_C    = [23.8 36.3 46.4 54.4 61.7 69.2];  %LUT input
+LUT_dutyCycle                   = [0 0.2 0.4 0.6 0.8 1];            %LUT output
+
+%Visualize table
+figure
+hold on
+plot(LUT_dutyCycle,LUT_TemperatureBreakpoints_C,'r+','LineWidth',2,'MarkerSize',15)
+plot(LUT_dutyCycle,LUT_TemperatureBreakpoints_C,'b-','LineWidth',2)
+grid on
+xlabel('Duty Cycle')
+ylabel('Desired Steady State Temperature (C)')
+
+figure
+hold on
+plot(LUT_TemperatureBreakpoints_C,LUT_dutyCycle,'r+','LineWidth',2,'MarkerSize',15)
+plot(LUT_TemperatureBreakpoints_C,LUT_dutyCycle,'b-','LineWidth',2)
+grid on
+xlabel('Desired Steady State Temperature (C)')
+ylabel('Duty Cycle')
+
 
 %% Open model
 open(modelName);

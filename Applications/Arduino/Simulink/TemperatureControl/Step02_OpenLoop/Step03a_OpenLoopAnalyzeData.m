@@ -11,7 +11,8 @@ clc
 close all
 
 %% User settings
-inputFile  = 'OpenLoopSimulinkData_ID04.mat';
+inputFile  = 'OpenLoopSimulinkData_IDXX.mat';
+% inputFile  = 'OpenLoopSimulinkData_ID04.mat';
 
 %% Analyze data
 temp = load(inputFile);
