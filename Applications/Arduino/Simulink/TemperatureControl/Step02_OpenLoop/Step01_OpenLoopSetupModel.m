@@ -1,28 +1,34 @@
-%Interface with a MAX31856 via SPI.  This is similar to the functionality
-%outlined in \LumArduinoSDK\Examples\MAX31856\SPI_OneShot\SPI_OneShot.ino
-%except this uses the Simulink Support Package for Arduino Hardware to
-%achieve this functionality.
+%Open loop model with temperature control.
 %
 %Christopher Lum
 %lum@uw.edu
 
 %Version History
-%12/14/24: Created
-%12/19/24: Continued working after getting MATLAB version to work
-%01/05/25: Removing extraneous register addresses
+%01/11/25: Created
 
 clear
 clc
 close all
 
-%% User settings
-modelName = 'MAX31856_model.slx';
+ChangeWorkingDirectoryToThisLocation();
 
-tFinal_s = 15;
+%% User settings
+modelName = 'OpenLoopModel.slx';
+
+tFinal_s = 900;
 % deltaT_s = 1/2;      %time step
-deltaT_s = 1/10;      %time step
+deltaT_s = 1/4;      %time step
+
+% deltaT_s = 1/10;      %time step
+
 % deltaT_s = 1/20;      %time step
 % deltaT_s = 1/40;      %time step
+
+%% Setup
+cwd = pwd;
+directoryLibrary = ReturnPathStringNLevelsUp(1);
+addpath(directoryLibrary)
+cd(cwd);
 
 %% Global section of .ino code
 %CR0
@@ -66,7 +72,30 @@ warning('Need to programatically set these in configuration settings.')
 % max31856SpiSettings.BitRate = SPIMaxSpeed_hz;
 % max31856SpiSettings.SPIMode = spiMode;
 
-%% Compute parameters
+%% PWM Output
+PinPWM  = 3;
+
+%% Open Loop Controller
+LUT_TemperatureBreakpoints_C    = [23.8 36.3 46.4 54.4 61.7 69.2];  %LUT input
+LUT_dutyCycle                   = [0 0.2 0.4 0.6 0.8 1];            %LUT output
+
+%Visualize table
+figure
+hold on
+plot(LUT_dutyCycle,LUT_TemperatureBreakpoints_C,'r+','LineWidth',2,'MarkerSize',15)
+plot(LUT_dutyCycle,LUT_TemperatureBreakpoints_C,'b-','LineWidth',2)
+grid on
+xlabel('Duty Cycle')
+ylabel('Desired Steady State Temperature (C)')
+
+figure
+hold on
+plot(LUT_TemperatureBreakpoints_C,LUT_dutyCycle,'r+','LineWidth',2,'MarkerSize',15)
+plot(LUT_TemperatureBreakpoints_C,LUT_dutyCycle,'b-','LineWidth',2)
+grid on
+xlabel('Desired Steady State Temperature (C)')
+ylabel('Duty Cycle')
+
 
 %% Open model
 open(modelName);

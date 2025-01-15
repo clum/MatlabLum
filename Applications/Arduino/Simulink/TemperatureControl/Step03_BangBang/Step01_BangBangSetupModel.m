@@ -1,28 +1,34 @@
-%Interface with a MAX31856 via SPI.  This is similar to the functionality
-%outlined in \LumArduinoSDK\Examples\MAX31856\SPI_OneShot\SPI_OneShot.ino
-%except this uses the Simulink Support Package for Arduino Hardware to
-%achieve this functionality.
+%Bang Bang loop model with temperature control.
 %
 %Christopher Lum
 %lum@uw.edu
 
 %Version History
-%12/14/24: Created
-%12/19/24: Continued working after getting MATLAB version to work
-%01/05/25: Removing extraneous register addresses
+%01/11/25: Created
 
 clear
 clc
 close all
 
-%% User settings
-modelName = 'MAX31856_model.slx';
+ChangeWorkingDirectoryToThisLocation();
 
-tFinal_s = 15;
+%% User settings
+modelName = 'BangBangModel.slx';
+
+tFinal_s = 7*60;
 % deltaT_s = 1/2;      %time step
-deltaT_s = 1/10;      %time step
+deltaT_s = 1/4;      %time step
+
+% deltaT_s = 1/10;      %time step
+
 % deltaT_s = 1/20;      %time step
 % deltaT_s = 1/40;      %time step
+
+%% Setup
+cwd = pwd;
+directoryLibrary = ReturnPathStringNLevelsUp(1);
+addpath(directoryLibrary)
+cd(cwd);
 
 %% Global section of .ino code
 %CR0
@@ -65,6 +71,9 @@ warning('Need to programatically set these in configuration settings.')
 % max31856SpiSettings = device(a,'SPIChipSelectPin',pin_CS);
 % max31856SpiSettings.BitRate = SPIMaxSpeed_hz;
 % max31856SpiSettings.SPIMode = spiMode;
+
+%% PWM Output
+PinPWM  = 3;
 
 %% Compute parameters
 
