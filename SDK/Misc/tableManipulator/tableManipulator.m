@@ -172,6 +172,9 @@ classdef tableManipulator
             %   table and performs a moving average using the specified
             %   window.
             %
+            %   Valid options include:
+            %       'WindowSize'    number of samples to include in window
+            %
             %INPUT:     -None
             %
             %OUTPUT:    -TAve: Table with columns with moving average
@@ -182,6 +185,7 @@ classdef tableManipulator
             
             %Version History
             %01/06/25: Created
+            %01/09/25: Updated documentation
             
             arguments
                 obj                 (1,1) tableManipulator;
