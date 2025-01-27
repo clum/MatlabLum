@@ -11,8 +11,10 @@ clc
 close all
 
 %% User settings
-inputFile  = 'BangBangSimulinkData_IDXX.mat';
-% inputFile  = 'BangBangSimulinkData_ID01.mat';
+% inputFile  = 'BangBangSimulinkData_IDXX.mat';
+% inputFile  = 'BangBangSimulinkData_ID01.mat';   %shows chattering
+inputFile  = 'BangBangSimulinkData_ID03.mat';   %shows chattering, fan off (use this)
+% inputFile  = 'BangBangSimulinkData_ID04.mat';   %repeatability run
 
 %% Analyze data
 temp = load(inputFile);
@@ -40,14 +42,14 @@ ax = [];
 figure
 ax(end+1) = subplot(2,1,1);
 hold on
-plot(t_s,T_cmd_C,'DisplayName',StringWithUnderscoresForPlot('T_cmd_C'))
-plot(t_s,tempTC,'DisplayName',StringWithUnderscoresForPlot('tempTC'))
+plot(t_s,T_cmd_C,'DisplayName',StringWithUnderscoresForPlot('T_cmd_C'),'LineWidth',2)
+plot(t_s,tempTC,'DisplayName',StringWithUnderscoresForPlot('tempTC'),'LineWidth',2)
 legend()
 grid on
 ylabel('Temp (C)')
 
 ax(end+1) = subplot(2,1,2);
-plot(t_s,u,'DisplayName',StringWithUnderscoresForPlot('u'))
+plot(t_s,u,'DisplayName',StringWithUnderscoresForPlot('u'),'LineWidth',2)
 legend()
 grid on
 ylabel('u')

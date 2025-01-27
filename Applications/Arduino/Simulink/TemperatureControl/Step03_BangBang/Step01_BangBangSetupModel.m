@@ -24,6 +24,8 @@ deltaT_s = 1/4;      %time step
 % deltaT_s = 1/20;      %time step
 % deltaT_s = 1/40;      %time step
 
+u_ON = 0.2;   %When bang/bang controller is on, what control signal should be applied
+
 %% Setup
 cwd = pwd;
 directoryLibrary = ReturnPathStringNLevelsUp(1);

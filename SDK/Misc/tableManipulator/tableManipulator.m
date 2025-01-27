@@ -217,6 +217,42 @@ classdef tableManipulator
             end
         end
 
+        function [TS] = SortBySpecifiedColumn(obj,ColumnName)
+            %SortBySpecifiedColumn Sorts the table by the specified column
+            %
+            %   [TS] = SortBySpecifiedColumn(ColName) Sorts the table by
+            %   the specified column.  This is similar to Excel's feature
+            %   of sorting and expanding the selection.
+            %
+            %INPUT:     -ColName:   name of the column to sort by
+            %
+            %OUTPUT:    -TS:        Sorted Table
+            %
+            %Christopher Lum
+            %lum@uw.edu
+            
+            %Version History
+            %01/15/25: Created
+            
+            arguments
+                obj         (1,1) tableManipulator;
+                ColumnName  (1,1) string;
+            end
+            
+            %------------------CHECKING DATA FORMAT------------------------
+            
+            %--------------------BEGIN CALCULATIONS------------------------
+            T = obj.T;
+            varNames = obj.VariableNames;
+
+            assert(any(ismember(varNames,ColumnName)),['Could not find column of ',ColumnName,' within table.']);
+            
+            X = T.(ColumnName);
+            [XSorted,I] = sort(X);
+
+            TS = T(I,:);
+        end
+
     end
     
     %----------------------------------------------------------------------
