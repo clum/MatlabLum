@@ -18,6 +18,7 @@ function [PATHS] = GetPathsMatlabLum()
 %10/24/24: Added Simulation
 %11/30/24: Added Conversions
 %01/07/25: Added Controls
+%02/15/25: Added FlightMechanics and Networking
 
 REPO_DIR = fileparts(mfilename('fullpath'));
 
@@ -33,6 +34,9 @@ PATHS{end+1,1} = [REPO_DIR,'\SDK\Controls'];
 %Conversions
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Conversions'];
 
+%FlightMechanics
+PATHS{end+1,1} = [REPO_DIR,'\SDK\FlightMechanics'];
+
 %Graphics
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Graphics'];
 
@@ -43,6 +47,9 @@ PATHS{end+1,1} = [REPO_DIR,'\SDK\Mapping\MicaSense'];
 %Misc
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Misc'];
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Misc\tableManipulator'];
+
+%Networking
+PATHS{end+1,1} = [REPO_DIR,'\SDK\Networking'];
 
 %Probability
 PATHS{end+1,1} = [REPO_DIR,'\SDK\Probability'];
