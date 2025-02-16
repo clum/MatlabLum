@@ -1,11 +1,11 @@
-%Simulation of bang/bang control for temperature control.
+%Simulation of Bang/bang with hysteresis deadband for temperature control.
 %
 %Christopher Lum
 %lum@uw.edu
 
 %Version History
-%01/24/25: Created
-%01/31/25: Updated pathing
+%01/26/25: Created
+%01/31/25: Updating pathing
 
 clear
 clc
@@ -14,27 +14,21 @@ close all
 ChangeWorkingDirectoryToThisLocation();
 
 %% User settings
-simulinkModel = 'SimulationBangBangModel.slx';
-deltaT_s = 0.01;
-tFinal_s = 7*60;
+% inputFile = 'BangBangHysteresisSimulinkData_IDXX.mat';
 
-%Plant parameters
-K           = 49;
-zeta        = 1.5;
-wn          = 0.03;
-Tdelay_s    = 1.2;
-Tambient_C  = 24.1875;
+% inputFile = 'BangBangHysteresisSimulinkData_ID01.mat';      %bang/bang, shows chattering
+% inputFile = 'BangBangHysteresisSimulinkData_ID03.mat';      %bang/bang w/ hysteresis, fixes chattering
 
-%Controller parameters
-u_ON = 1;   %When bang/bang controller is on, what control signal should be applied
+% inputFile = 'BangBangHysteresisSimulinkData_ID07.mat';
 
-%% Pathing
-cwd = pwd;
-addpath(ReturnPathStringNLevelsUp(2));
+inputFile = 'BangBangHysteresisSimulinkData_ID11.mat';  %show how additional noise can lead to chatter
 
-%% Simulate model
-simout = sim(simulinkModel);
+%% Load data
+disp(['Loading data from ',inputFile])
+temp = load(inputFile);
+simout = temp.simout;
 
+%% Analyze data
 u_sim               = simout.logsout.getElement('u');
 temperatureTC_C_sim = simout.logsout.getElement('temperatureTC_C');
 T_cmd_C_sim         = simout.logsout.getElement('T_cmd_C');

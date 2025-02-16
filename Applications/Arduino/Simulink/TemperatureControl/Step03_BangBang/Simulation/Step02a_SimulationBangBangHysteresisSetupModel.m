@@ -5,6 +5,7 @@
 
 %Version History
 %01/26/25: Created
+%01/31/25: Updating pathing
 
 clear
 clc
@@ -13,7 +14,8 @@ close all
 ChangeWorkingDirectoryToThisLocation();
 
 %% User settings
-simulinkModel = 'SimulationBangBangHysteresisModel.slx';
+outputFile      = 'BangBangHysteresisSimulinkData_IDXX.mat';
+simulinkModel   = 'SimulationBangBangHysteresisModel.slx';
 deltaT_s = 0.01;
 tFinal_s = 7*60;
 
@@ -29,37 +31,33 @@ noisePower  = .00001;
 u_ON = 1;       %When bang/bang controller is on, what control signal should be applied
 deadbandSize_C = 2;
 
+controllerSelection = 3;    %1 = BangBangControllerType01 (bang/bang)
+                            %2 = BangBangControllerType02 (bang/bang w/ hysteresis with memory block)
+                            %3 = BangBangControllerType03 (bang/bang w/ hysteresis in stateflow)
+
+%% Pathing
+cwd = pwd;
+addpath(ReturnPathStringNLevelsUp(2));
+
 %% Simulate model
 simout = sim(simulinkModel);
 
-u_sim               = simout.logsout.getElement('u');
-temperatureTC_C_sim = simout.logsout.getElement('temperatureTC_C');
-T_cmd_C_sim         = simout.logsout.getElement('T_cmd_C');
+%% Save data
+saveVars = {
+    'K'
+    'zeta'
+    'wn'
+    'Tdelay_s'
+    'Tambient_C'
+    'noisePower'
+    'u_ON'
+    'deadbandSize_C'
+    'controllerSelection'
+    'simout'
+    };
 
-t_s_sim         = u_sim.Values.Time;
-u_sim           = u_sim.Values.Data;
-tempTC_C_sim    = temperatureTC_C_sim.Values.Data;
-T_cmd_C_sim     = T_cmd_C_sim.Values.Data;
-
-%Plot
-ax = [];
-
-figure
-ax(end+1) = subplot(2,1,1);
-hold on
-plot(t_s_sim,T_cmd_C_sim,'DisplayName',StringWithUnderscoresForPlot('T_cmd_C_sim'),'LineWidth',2)
-plot(t_s_sim,tempTC_C_sim,'DisplayName',StringWithUnderscoresForPlot('tempTC_C_sim'),'LineWidth',2)
-legend('Location','best')
-grid on
-ylabel('Temp (C)')
-
-ax(end+1) = subplot(2,1,2);
-hold on
-plot(t_s_sim,u_sim,'DisplayName',StringWithUnderscoresForPlot('u_sim'),'LineWidth',2)
-legend('Location','best')
-grid on
-ylabel('u')
-
-linkaxes(ax,'x')
+s = SaveVarsString(outputFile,saveVars);
+eval(s);
+disp(['Saved data to ',outputFile])
 
 disp('DONE!')

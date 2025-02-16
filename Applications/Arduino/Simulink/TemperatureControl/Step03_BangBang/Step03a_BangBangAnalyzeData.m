@@ -13,8 +13,13 @@ close all
 %% User settings
 % inputFile  = 'BangBangSimulinkData_IDXX.mat';
 % inputFile  = 'BangBangSimulinkData_ID01.mat';   %shows chattering
-inputFile  = 'BangBangSimulinkData_ID03.mat';   %shows chattering, fan off (use this)
+% inputFile  = 'BangBangSimulinkData_ID03.mat';   %shows chattering, fan off (use this)
 % inputFile  = 'BangBangSimulinkData_ID04.mat';   %repeatability run
+
+%with hysteresis deadband
+inputFile  = 'BangBangHysteresisSimulinkData_ID01.mat';   %deadbandSize_C = 2
+% inputFile  = 'BangBangHysteresisSimulinkData_ID07.mat';   %deadbandSize_C = 0.02
+
 
 %% Analyze data
 temp = load(inputFile);
