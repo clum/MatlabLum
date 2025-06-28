@@ -1,0 +1,104 @@
+function [figh] = PlotStairsGeometry(stairsStruct,options)
+
+%PlotStairsGeometry Plots the output of StairsGeometery
+%
+%   PlotStairsGeometry(stairsStruct) Plots the struct that is
+%   computed/output from StairsGeometry.
+%
+%   PlotStairsGeometry(stairsStruct,name,val,...) Does as above but uses
+%   the specified options in name/value pairs.
+%
+%INPUT:     -TBD
+%
+%OUTPUT:    -TBD
+%
+%See also StairsGeometry
+%
+%Christopher Lum
+%lum@uw.edu
+
+%Version History
+%06/27/25: Created
+
+arguments
+    stairsStruct                (1,1) struct
+    options.lineWidth           (1,1) double = 2
+    options.markerSize          (1,1) double = 13
+    options.colorStringer       (1,3) double = [153 102 0]/255;
+    options.colorStringerPoints (1,3) double = [255 0 0]/255;
+    options.colorFMBF           (1,3) double = [255 51 153]/255;
+    options.colorpP             (1,3) double = [0 255 0]/255;
+    options.colorpCrit          (1,3) double = [255 192 0]/255;
+    options.colorpM             (1,3) double = [255 192 0]/255;
+    options.colorRisers         (1,3) double = [112 48 160]/255;
+    options.colorTreads         (1,3) double = [146 208 80]/255;
+    options.figh                (1,1) = -1;
+end
+
+if(options.figh==-1)
+    %new plot
+    figh = figure;
+else
+    figure(options.figh);
+end
+
+hold on
+%When drawing the full stinger, add a line segment that connects the last
+%and first point
+plot([stairsStruct.xCoordinates;stairsStruct.xCoordinates(1)],...
+    [stairsStruct.yCoordinates;stairsStruct.yCoordinates(1)],...
+    'LineWidth',options.lineWidth,...
+    'MarkerSize',options.markerSize,...
+    'Color',options.colorStringer,...
+    'DisplayName','Stringer');
+plot(stairsStruct.xCoordinates,stairsStruct.yCoordinates,'o',...
+    'LineWidth',options.lineWidth,...
+    'MarkerSize',options.markerSize,...
+    'Color',options.colorStringerPoints,...
+    'DisplayName','Stringer (Points)');
+
+plot(stairsStruct.pFMBF(1),stairsStruct.pFMBF(2),'^',...
+    'LineWidth',options.lineWidth,...
+    'MarkerSize',options.markerSize,...
+    'Color',options.colorFMBF,...
+    'DisplayName','pFMBF')
+
+plot(stairsStruct.pP(1),stairsStruct.pP(2),'o',...
+    'LineWidth',options.lineWidth,...
+    'MarkerSize',options.markerSize,...
+    'Color',options.colorpP,...
+    'DisplayName','pP')
+
+plot(stairsStruct.pCrit(1),stairsStruct.pCrit(2),'x',...
+    'LineWidth',options.lineWidth,...
+    'MarkerSize',options.markerSize,...
+    'Color',options.colorpCrit,...
+    'DisplayName','pCrit')
+
+plot(stairsStruct.pM(1),stairsStruct.pM(2),'o',...
+    'LineWidth',options.lineWidth,...
+    'MarkerSize',options.markerSize,...
+    'Color',options.colorpM,...
+    'DisplayName','pM')
+
+%Plot the risers and treads.  When drawing, add a line segment that
+%connects the last and first point
+numSteps = length(stairsStruct.riserCoordinates);
+for k=1:numSteps
+    riserCoordinates_k = stairsStruct.riserCoordinates{k};
+    treadCoordinates_k = stairsStruct.treadCoordinates{k};
+
+    plot([riserCoordinates_k(:,1);riserCoordinates_k(1,1)],...
+        [riserCoordinates_k(:,2);riserCoordinates_k(1,2)],'--',...
+        'LineWidth',options.lineWidth,...
+        'Color',options.colorRisers)
+
+    plot([treadCoordinates_k(:,1);treadCoordinates_k(1,1)],...
+        [treadCoordinates_k(:,2);treadCoordinates_k(1,2)],'--',...
+        'LineWidth',options.lineWidth,...
+        'Color',options.colorTreads)
+
+end
+
+legend()
+grid on
