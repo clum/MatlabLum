@@ -30,6 +30,7 @@ function [stairsStruct] = StairsGeometry(rise,run,numSteps,tR,tT,tFMBF,tS)
 %06/24/25: Updated for riser and tread material
 %06/26/25: Continued working
 %06/27/25: Changing to output to stairStruct object.
+%06/28/25: Added rotation
 
 arguments
     rise        (1,1) double
@@ -164,15 +165,40 @@ for k=1:numSteps
     treadCoordinates{k} = [xTread yTread];
 end
 
-%% Package struct
-stairsStruct.xCoordinates        = xCoordinates;
-stairsStruct.yCoordinates        = yCoordinates;
-stairsStruct.unitRise            = unitRise;
-stairsStruct.unitRun             = unitRun;
-stairsStruct.pFMBF               = [0;tFMBF];
-stairsStruct.pP                  = [pPx;pPy];
-stairsStruct.pCrit               = pCrit;
-stairsStruct.pM                  = pM;
-stairsStruct.tMin                = tMin;
-stairsStruct.riserCoordinates    = riserCoordinates;
-stairsStruct.treadCoordinates    = treadCoordinates;
+%% Rotate coordinates
+%Express coordinates in frame aligned with rough lumber (this makes cutting
+%the stringer easier)
+
+%Rotation matrix from cartesian frame (F_C) to lumber frame (F_L)
+C_LC = [cos(theta) sin(theta);
+    -sin(theta) cos(theta)];
+
+coordinates_C = [xCoordinates';
+    yCoordinates'];
+
+coordinates_L = C_LC*coordinates_C;
+
+xCoordinates_L = coordinates_L(1,:)';
+yCoordinates_L = coordinates_L(2,:)';
+
+%offset yCoordinates_L so it starts at 0
+yCoordinates_L = yCoordinates_L - yCoordinates_L(end);
+
+%length of lumber before cuts
+LT = xCoordinates_L(end-2);
+
+%% Package outputs
+stairsStruct.xCoordinates       = xCoordinates;
+stairsStruct.yCoordinates       = yCoordinates;
+stairsStruct.unitRise           = unitRise;
+stairsStruct.unitRun            = unitRun;
+stairsStruct.pFMBF              = [0;tFMBF];
+stairsStruct.pP                 = [pPx;pPy];
+stairsStruct.pCrit              = pCrit;
+stairsStruct.pM                 = pM;
+stairsStruct.tMin               = tMin;
+stairsStruct.riserCoordinates   = riserCoordinates;
+stairsStruct.treadCoordinates   = treadCoordinates;
+stairsStruct.xCoordinates_L     = xCoordinates_L;
+stairsStruct.yCoordinates_L     = yCoordinates_L;
+stairsStruct.LT                 = LT;

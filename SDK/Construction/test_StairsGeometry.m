@@ -12,13 +12,13 @@ classdef test_StairsGeometry < matlab.unittest.TestCase
         function example01(tc)
             debug = true;
 
-            rise = 8*12;
-            run = 9*12;
-            numSteps = 14;
-            tR = 0.5;
-            tT = 0.75;
-            tFMBF = 1+0.5+0.25;
-            tS = 9.25;
+            rise        = 8*12;
+            run         = 9*12;
+            numSteps    = 14;
+            tR          = 7/16 + 0.35;       %OSB + carpet
+            tT          = 23/32 + 0.35;
+            tFMBF       = 1 + 7/16 + 0.27;     %insulation + OSB + vinyl flooring
+            tS          = 11.25;  %2x10 = 9.25", 2x12 = 11.25"
             
             [stairsStruct] = StairsGeometry(...
                 rise,run,numSteps,tR,tT,tFMBF,tS);
@@ -52,7 +52,6 @@ classdef test_StairsGeometry < matlab.unittest.TestCase
 %                 lineWidth = 2;
 %                 markerSize = 14;
 % 
-                figh = figure;
                 PlotStairsGeometry(stairsStruct)
 %                 hold on
 %                 plot(xCoordinates,yCoordinates,'DisplayName','Stringer');

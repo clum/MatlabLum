@@ -1,4 +1,4 @@
-function [figh] = PlotStairsGeometry(stairsStruct,options)
+function [f] = PlotStairsGeometry(stairsStruct,options)
 
 %PlotStairsGeometry Plots the output of StairsGeometery
 %
@@ -32,16 +32,9 @@ arguments
     options.colorpM             (1,3) double = [255 192 0]/255;
     options.colorRisers         (1,3) double = [112 48 160]/255;
     options.colorTreads         (1,3) double = [146 208 80]/255;
-    options.figh                (1,1) = -1;
 end
 
-if(options.figh==-1)
-    %new plot
-    figh = figure;
-else
-    figure(options.figh);
-end
-
+fighA = figure;
 hold on
 %When drawing the full stinger, add a line segment that connects the last
 %and first point
@@ -97,8 +90,28 @@ for k=1:numSteps
         [treadCoordinates_k(:,2);treadCoordinates_k(1,2)],'--',...
         'LineWidth',options.lineWidth,...
         'Color',options.colorTreads)
-
 end
 
+axis('equal')
 legend()
 grid on
+
+%% Lumber frame
+fighB = figure;
+hold on
+plot([stairsStruct.xCoordinates_L;stairsStruct.xCoordinates_L(1)],...
+    [stairsStruct.yCoordinates_L;stairsStruct.yCoordinates_L(1)],...
+    'LineWidth',options.lineWidth,...
+    'MarkerSize',options.markerSize,...
+    'Color',options.colorStringer,...
+    'DisplayName','Stringer');
+plot(stairsStruct.xCoordinates_L,stairsStruct.yCoordinates_L,'o',...
+    'LineWidth',options.lineWidth,...
+    'MarkerSize',options.markerSize,...
+    'Color',options.colorStringerPoints,...
+    'DisplayName','Stringer (Points)');
+axis('equal')
+legend()
+grid on
+
+f = [fighA;fighB];
