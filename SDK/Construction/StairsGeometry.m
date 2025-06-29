@@ -422,6 +422,25 @@ classdef StairsGeometry < handle
 
             f = [fighA;fighB];
         end
+    
+        function [xLow,xMiddle,xHigh] = CutList(obj)
+            assert(obj.checkConsistency(),'Object does not appear consistent')
+
+            xCoordinates_L = obj.xCoordinates_L;
+            yCoordinates_L = obj.yCoordinates_L;
+
+            N = length(xCoordinates_L);
+            
+
+            lowIndices = [N-1;N];
+
+            midIndices = [];
+            highIndices = [];
+            for k=1:obj.numSteps
+                
+            end
+            
+        end
     end
 
     %----------------------------------------------------------------------
