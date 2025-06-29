@@ -1,4 +1,4 @@
-classdef StairsGeometry
+classdef StairsGeometry < handle
     %Class for computing geometry related to stairs.
     %
     %Christopher Lum
@@ -97,10 +97,30 @@ classdef StairsGeometry
         %Get/Set
 
         %Class API
-        function [obj] = ComputeDerivedParameters(obj)
-            %computeDerivedParameters Computes derived parameters
+        function [] = display(obj)
+            disp('Independent Parameters')
+            disp('----------------------')
+            disp(['rise     = ',num2str(obj.rise)])
+            disp(['run      = ',num2str(obj.run)])
+            disp(['numSteps = ',num2str(obj.numSteps)])
+            disp(['tR       = ',num2str(obj.tR)])
+            disp(['tT       = ',num2str(obj.tT)])
+            disp(['tFMBF    = ',num2str(obj.tFMBF)])
+            disp(['tS       = ',num2str(obj.tS)])
+            disp(' ')
+            disp('Selected Derived Parameters')
+            disp('---------------------------')
+            disp(['unitRise       = ',num2str(obj.unitRise)])
+            disp(['unitRun        = ',num2str(obj.unitRun)])
+            disp(['rad2deg(theta) = ',num2str(rad2deg(obj.theta))])
+            disp(['tMin           = ',num2str(obj.tMin)])
+            disp(['LT             = ',num2str(obj.LT)])
+        end
+
+        function [obj] = UpdateDerivedParameters(obj)
+            %UpdateDerivedParameters Update derived parameters
             %
-            %   computeDerivedParameters() Computes parameters that are
+            %   UpdateDerivedParameters() Updates parameters that are
             %   derived based on the existing values in the public
             %   properties.
             %
@@ -165,22 +185,24 @@ classdef StairsGeometry
             pTLy = yCoordinates(end-1);
             pTL = [pTLx;pTLy];
 
-            v1x = obj.tS*sin(theta);
-            v1y = -obj.tS*cos(theta);
-
-            pPx = pTLx + v1x;
-            pPy = pTLy + v1y;
-            pP = [pPx;pPy];
-
-            distanceCheck = abs(norm([pPx;pPy]-[pTLx;pTLy]) - obj.tS);
-            assert(distanceCheck < obj.tS/10000,'Error in computation, pP does not appear correct')
-
-            %Compute pPR.  Do this by projecting pP along the line inclined at angle
-            %theta until the x component is equal to pTRx
             pTRx = xCoordinates(end);
             pTRy = yCoordinates(end);
             pTR = [pTRx;pTRy];
 
+            v1x = obj.tS*sin(theta);
+            v1y = -obj.tS*cos(theta);
+
+            %In some cases it is safer to use the numStep-1 point
+            pTLx_alt = xCoordinates(end-3);
+            pTLy_alt = yCoordinates(end-3);
+            pCrit = [xCoordinates(end-4);yCoordinates(end-4)];
+
+            pPx = pTLx_alt + v1x;
+            pPy = pTLy_alt + v1y;
+            pP = [pPx;pPy];
+
+            %Compute pPR.  Do this by projecting pP along the line inclined at angle
+            %theta until the x component is equal to pTRx
             DT = -(pPx - pTRx)*sec(theta);
 
             pPRx = pPx + DT*cos(theta);
@@ -208,7 +230,6 @@ classdef StairsGeometry
             DM = unitRise*sin(theta);
             pM = pPR + (DT+DM)*u;
 
-            pCrit = [xCoordinates(end-4);yCoordinates(end-4)];
             tMin = norm(pM - pCrit);
 
             %Coordinates for riser and tread materials
@@ -280,34 +301,145 @@ classdef StairsGeometry
             obj.xCoordinates_L      = xCoordinates_L;
             obj.yCoordinates_L      = yCoordinates_L;
             obj.LT                  = LT;
+
+            assert(obj.checkConsistency(),'Object does not appear consistent')
         end
 
-        function [] = display(obj)
-            disp('Independent Parameters')
-            disp('----------------------')
-            disp(['rise     = ',num2str(obj.rise)])
-            disp(['run      = ',num2str(obj.run)])
-            disp(['numSteps = ',num2str(obj.numSteps)])
-            disp(['tR       = ',num2str(obj.tR)])
-            disp(['tT       = ',num2str(obj.tT)])
-            disp(['tFMBF    = ',num2str(obj.tFMBF)])
-            disp(['tS       = ',num2str(obj.tS)])
-            disp(' ')
-            disp('Selected Derived Parameters')
-            disp('---------------------------')
-            disp(['unitRise       = ',num2str(obj.unitRise)])
-            disp(['unitRun        = ',num2str(obj.unitRun)])
-            disp(['rad2deg(theta) = ',num2str(rad2deg(obj.theta))])
-            disp(['tMin           = ',num2str(obj.tMin)])
-            disp(['LT             = ',num2str(obj.LT)])
-        end
+        function [f] = PlotStairsGeometry(obj,options)
 
+            %PlotStairsGeometry Plots the output of StairsGeometery
+            %
+            %   PlotStairsGeometry(obj) Plots the struct that is
+            %   computed/output from StairsGeometry.
+            %
+            %   PlotStairsGeometry(obj,name,val,...) Does as above but uses
+            %   the specified options in name/value pairs.
+            %
+            %INPUT:     -TBD
+            %
+            %OUTPUT:    -TBD
+            %
+            %See also StairsGeometry
+            %
+            %Christopher Lum
+            %lum@uw.edu
+
+            %Version History
+            %06/27/25: Created
+
+            arguments
+                obj                         (1,1) StairsGeometry
+                options.lineWidth           (1,1) double = 2
+                options.markerSize          (1,1) double = 13
+                options.colorStringer       (1,3) double = [153 102 0]/255;
+                options.colorStringerPoints (1,3) double = [255 0 0]/255;
+                options.colorFMBF           (1,3) double = [255 51 153]/255;
+                options.colorpP             (1,3) double = [0 255 0]/255;
+                options.colorpCrit          (1,3) double = [255 192 0]/255;
+                options.colorpM             (1,3) double = [255 192 0]/255;
+                options.colorRisers         (1,3) double = [112 48 160]/255;
+                options.colorTreads         (1,3) double = [146 208 80]/255;
+            end
+
+            fighA = figure;
+            hold on
+            %When drawing the full stinger, add a line segment that connects the last
+            %and first point
+            plot([obj.xCoordinates;obj.xCoordinates(1)],...
+                [obj.yCoordinates;obj.yCoordinates(1)],...
+                'LineWidth',options.lineWidth,...
+                'MarkerSize',options.markerSize,...
+                'Color',options.colorStringer,...
+                'DisplayName','Stringer');
+            plot(obj.xCoordinates,obj.yCoordinates,'o',...
+                'LineWidth',options.lineWidth,...
+                'MarkerSize',options.markerSize,...
+                'Color',options.colorStringerPoints,...
+                'DisplayName','Stringer (Points)');
+
+            plot(obj.pFMBF(1),obj.pFMBF(2),'^',...
+                'LineWidth',options.lineWidth,...
+                'MarkerSize',options.markerSize,...
+                'Color',options.colorFMBF,...
+                'DisplayName','pFMBF')
+
+            plot(obj.pP(1),obj.pP(2),'o',...
+                'LineWidth',options.lineWidth,...
+                'MarkerSize',options.markerSize,...
+                'Color',options.colorpP,...
+                'DisplayName','pP')
+
+            plot(obj.pCrit(1),obj.pCrit(2),'x',...
+                'LineWidth',options.lineWidth,...
+                'MarkerSize',options.markerSize,...
+                'Color',options.colorpCrit,...
+                'DisplayName','pCrit')
+
+            plot(obj.pM(1),obj.pM(2),'o',...
+                'LineWidth',options.lineWidth,...
+                'MarkerSize',options.markerSize,...
+                'Color',options.colorpM,...
+                'DisplayName','pM')
+
+            %Plot the risers and treads.  When drawing, add a line segment that
+            %connects the last and first point
+            for k=1:obj.numSteps
+                riserCoordinates_k = obj.riserCoordinates{k};
+                treadCoordinates_k = obj.treadCoordinates{k};
+
+                plot([riserCoordinates_k(:,1);riserCoordinates_k(1,1)],...
+                    [riserCoordinates_k(:,2);riserCoordinates_k(1,2)],'--',...
+                    'LineWidth',options.lineWidth,...
+                    'Color',options.colorRisers)
+
+                plot([treadCoordinates_k(:,1);treadCoordinates_k(1,1)],...
+                    [treadCoordinates_k(:,2);treadCoordinates_k(1,2)],'--',...
+                    'LineWidth',options.lineWidth,...
+                    'Color',options.colorTreads)
+            end
+
+            axis('equal')
+            legend('Location','best')
+            grid on
+
+            %% Lumber frame
+            fighB = figure;
+            hold on
+            plot([obj.xCoordinates_L;obj.xCoordinates_L(1)],...
+                [obj.yCoordinates_L;obj.yCoordinates_L(1)],...
+                'LineWidth',options.lineWidth,...
+                'MarkerSize',options.markerSize,...
+                'Color',options.colorStringer,...
+                'DisplayName','Stringer');
+            plot(obj.xCoordinates_L,obj.yCoordinates_L,'o',...
+                'LineWidth',options.lineWidth,...
+                'MarkerSize',options.markerSize,...
+                'Color',options.colorStringerPoints,...
+                'DisplayName','Stringer (Points)');
+            axis('equal')
+            legend('Location','best')
+            grid on
+
+            f = [fighA;fighB];
+        end
     end
 
     %----------------------------------------------------------------------
     %Private methods
     %----------------------------------------------------------------------
     methods (Access='private')
+        function [isConsistent] = checkConsistency(obj)
+            isConsistent = true;
+
+            %Check critical dimension calculation
+            distanceCheck = abs(norm(obj.pP - obj.pCrit) - obj.tS);
+            
+            if(distanceCheck > obj.tS/10000)
+                isConsisent = false;
+                return
+            end
+
+        end
     end
 
     %----------------------------------------------------------------------
