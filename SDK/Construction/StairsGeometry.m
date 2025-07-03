@@ -10,6 +10,8 @@ classdef StairsGeometry < handle
     %06/26/25: Continued working
     %06/27/25: Changing to output to stairStruct object.
     %06/28/25: Added rotation.  Converted to class
+    %06/30/25: Changed property names
+    %07/02/25: Added LR and LT (rise and tread dimensions)
 
     %----------------------------------------------------------------------
     %Public properties/fields
@@ -25,11 +27,11 @@ classdef StairsGeometry < handle
     end
 
     %----------------------------------------------------------------------
-    %Private properties/fields
+    %Public Get but Private Set properties/fields
     %----------------------------------------------------------------------
-    properties (GetAccess='private', SetAccess='private')
-        xCoordinates        = [];
-        yCoordinates        = [];
+    properties (GetAccess='public', SetAccess='private')
+        stringerX           = [];
+        stringerY           = [];
         unitRise            = [];
         unitRun             = [];
         theta               = [];
@@ -40,9 +42,11 @@ classdef StairsGeometry < handle
         tMin                = [];
         riserCoordinates    = [];
         treadCoordinates    = [];
-        xCoordinates_L      = [];
-        yCoordinates_L      = [];
-        LT                  = [];
+        stringerX_L         = [];
+        stringerY_L         = [];
+        LR                  = [];   %vertical lenght of riser material
+        LT                  = [];   %horizontal length of tread material
+        LRL                 = [];   %raw lumber length
     end
 
     %----------------------------------------------------------------------
@@ -88,6 +92,8 @@ classdef StairsGeometry < handle
             obj.tT          = tT;
             obj.tFMBF       = tFMBF;
             obj.tS          = tS;
+
+            obj.UpdateDerivedParameters();
         end
 
         %Destructor
@@ -114,7 +120,9 @@ classdef StairsGeometry < handle
             disp(['unitRun        = ',num2str(obj.unitRun)])
             disp(['rad2deg(theta) = ',num2str(rad2deg(obj.theta))])
             disp(['tMin           = ',num2str(obj.tMin)])
+            disp(['LR             = ',num2str(obj.LR)])
             disp(['LT             = ',num2str(obj.LT)])
+            disp(['LRL            = ',num2str(obj.LRL)])
         end
 
         function [obj] = UpdateDerivedParameters(obj)
@@ -138,10 +146,11 @@ classdef StairsGeometry < handle
             %06/26/25: Continued working
             %06/27/25: Changing to output to stairStruct object.
             %06/28/25: Added rotation.  Moved to class
+            %07/02/25: Added LR and LT parameter calculation
 
             %% Initialize containers
-            xCoordinates        = [];
-            yCoordinates        = [];
+            stringerX = [];
+            stringerY = [];
 
             %% Calculations
             %Intermediate variables
@@ -149,53 +158,55 @@ classdef StairsGeometry < handle
             unitRun  = obj.run/obj.numSteps;
 
             %Compute points
-            xCoordinates(end+1,1) = 0;
-            yCoordinates(end+1,1) = 0;
+            stringerX(end+1,1) = 0;
+            stringerY(end+1,1) = 0;
 
             %Get the first point above the subfloor
-            xCoordinates(end+1,1) = 0;
-            yCoordinates(end+1,1) = obj.tFMBF + unitRise - obj.tT;
+            stringerX(end+1,1) = 0;
+            stringerY(end+1,1) = obj.tFMBF + unitRise - obj.tT;
 
             %Get the front faces of each step
             for k=1:obj.numSteps-1
-                xCoordinates(end+1,1) = xCoordinates(end) + unitRun;
-                yCoordinates(end+1,1) = yCoordinates(end);
+                stringerX(end+1,1) = stringerX(end) + unitRun;
+                stringerY(end+1,1) = stringerY(end);
 
-                xCoordinates(end+1,1) = xCoordinates(end);
-                yCoordinates(end+1,1) = yCoordinates(end) + unitRise;
+                stringerX(end+1,1) = stringerX(end);
+                stringerY(end+1,1) = stringerY(end) + unitRise;
             end
 
             %Get the top right point
-            xCoordinates(end+1,1) = xCoordinates(end) + unitRun - obj.tR;
-            yCoordinates(end+1,1) = yCoordinates(end);
+            stringerX(end+1,1) = stringerX(end) + unitRun;
+            stringerY(end+1,1) = stringerY(end);
 
             %Get the angle, theta, using points 2 and 4
-            x2 = xCoordinates(2);
-            y2 = yCoordinates(2);
+            x2 = stringerX(2);
+            y2 = stringerY(2);
 
-            x4 = xCoordinates(4);
-            y4 = yCoordinates(4);
+            x4 = stringerX(4);
+            y4 = stringerY(4);
 
             theta = atan2(y4-y2,x4-x2);
+            thetaCheck = atan2(obj.rise,obj.run);
+            assert(AreMatricesSame(theta,thetaCheck,deg2rad(0.0001)));
 
             %The bottom of the stringer should be slid out as much as possible to
 
             %Compute the projected point
-            pTLx = xCoordinates(end-1);
-            pTLy = yCoordinates(end-1);
+            pTLx = stringerX(end-1);
+            pTLy = stringerY(end-1);
             pTL = [pTLx;pTLy];
 
-            pTRx = xCoordinates(end);
-            pTRy = yCoordinates(end);
+            pTRx = stringerX(end);
+            pTRy = stringerY(end);
             pTR = [pTRx;pTRy];
 
             v1x = obj.tS*sin(theta);
             v1y = -obj.tS*cos(theta);
 
             %In some cases it is safer to use the numStep-1 point
-            pTLx_alt = xCoordinates(end-3);
-            pTLy_alt = yCoordinates(end-3);
-            pCrit = [xCoordinates(end-4);yCoordinates(end-4)];
+            pTLx_alt = stringerX(end-3);
+            pTLy_alt = stringerY(end-3);
+            pCrit = [stringerX(end-4);stringerY(end-4)];
 
             pPx = pTLx_alt + v1x;
             pPy = pTLy_alt + v1y;
@@ -209,8 +220,8 @@ classdef StairsGeometry < handle
             pPRy = pPy + DT*sin(theta);
             pPR = [pPRx;pPRy];
 
-            xCoordinates(end+1,1) = pPRx;
-            yCoordinates(end+1,1) = pPRy;
+            stringerX(end+1,1) = pPRx;
+            stringerY(end+1,1) = pPRy;
 
             %Compute pPL.  Do this by creating a unit vector from pPR towards pP and
             %then projecting this vector until the x component is equal to 0
@@ -222,8 +233,8 @@ classdef StairsGeometry < handle
 
             pPL = pPR + DB*u;
 
-            xCoordinates(end+1,1) = pPL(1);
-            yCoordinates(end+1,1) = pPL(2);
+            stringerX(end+1,1) = pPL(1);
+            stringerY(end+1,1) = pPL(2);
 
             %% Compute extra parameters
             %Minimum thickness distance and points
@@ -235,8 +246,8 @@ classdef StairsGeometry < handle
             %Coordinates for riser and tread materials
             for k=1:obj.numSteps
                 m = 2*k;
-                xCorner = xCoordinates(m);
-                yCorner = yCoordinates(m);
+                xCorner = stringerX(m);
+                yCorner = stringerY(m);
 
                 %riser
                 xMinR = xCorner-obj.tR;
@@ -244,6 +255,7 @@ classdef StairsGeometry < handle
 
                 yMinR = yCorner-unitRise+obj.tT;
                 yMaxR = yCorner;
+                LR = yMaxR - yMinR;
 
                 xRiser = [xMinR;xMaxR;xMaxR;xMinR];
                 yRiser = [yMinR;yMinR;yMaxR;yMaxR];
@@ -253,6 +265,7 @@ classdef StairsGeometry < handle
                 %tread
                 xMinT = xCorner-obj.tR;
                 xMaxT = xCorner+unitRun;
+                LT = xMaxT - xMinT;
 
                 yMinT = yCorner;
                 yMaxT = yCorner+obj.tT;
@@ -271,23 +284,23 @@ classdef StairsGeometry < handle
             C_LC = [cos(theta) sin(theta);
                 -sin(theta) cos(theta)];
 
-            coordinates_C = [xCoordinates';
-                yCoordinates'];
+            coordinates_C = [stringerX';
+                stringerY'];
 
             coordinates_L = C_LC*coordinates_C;
 
-            xCoordinates_L = coordinates_L(1,:)';
-            yCoordinates_L = coordinates_L(2,:)';
+            stringerX_L = coordinates_L(1,:)';
+            stringerY_L = coordinates_L(2,:)';
 
             %offset yCoordinates_L so it starts at 0
-            yCoordinates_L = yCoordinates_L - yCoordinates_L(end);
+            stringerY_L = stringerY_L - stringerY_L(end);
 
-            %length of lumber before cuts
-            LT = xCoordinates_L(end-2);
+            %length of raw lumber before cuts
+            LRL = stringerX_L(end-2);
 
             %% Store outputs in data members
-            obj.xCoordinates        = xCoordinates;
-            obj.yCoordinates        = yCoordinates;
+            obj.stringerX           = stringerX;
+            obj.stringerY           = stringerY;
             obj.unitRise            = unitRise;
             obj.unitRun             = unitRun;
             obj.theta               = theta;
@@ -298,15 +311,16 @@ classdef StairsGeometry < handle
             obj.tMin                = tMin;
             obj.riserCoordinates    = riserCoordinates;
             obj.treadCoordinates    = treadCoordinates;
-            obj.xCoordinates_L      = xCoordinates_L;
-            obj.yCoordinates_L      = yCoordinates_L;
+            obj.stringerX_L         = stringerX_L;
+            obj.stringerY_L         = stringerY_L;
+            obj.LRL                 = LRL;
+            obj.LR                  = LR;
             obj.LT                  = LT;
 
             assert(obj.checkConsistency(),'Object does not appear consistent')
         end
 
         function [f] = PlotStairsGeometry(obj,options)
-
             %PlotStairsGeometry Plots the output of StairsGeometery
             %
             %   PlotStairsGeometry(obj) Plots the struct that is
@@ -345,13 +359,13 @@ classdef StairsGeometry < handle
             hold on
             %When drawing the full stinger, add a line segment that connects the last
             %and first point
-            plot([obj.xCoordinates;obj.xCoordinates(1)],...
-                [obj.yCoordinates;obj.yCoordinates(1)],...
+            plot([obj.stringerX;obj.stringerX(1)],...
+                [obj.stringerY;obj.stringerY(1)],...
                 'LineWidth',options.lineWidth,...
                 'MarkerSize',options.markerSize,...
                 'Color',options.colorStringer,...
                 'DisplayName','Stringer');
-            plot(obj.xCoordinates,obj.yCoordinates,'o',...
+            plot(obj.stringerX,obj.stringerY,'o',...
                 'LineWidth',options.lineWidth,...
                 'MarkerSize',options.markerSize,...
                 'Color',options.colorStringerPoints,...
@@ -405,13 +419,13 @@ classdef StairsGeometry < handle
             %% Lumber frame
             fighB = figure;
             hold on
-            plot([obj.xCoordinates_L;obj.xCoordinates_L(1)],...
-                [obj.yCoordinates_L;obj.yCoordinates_L(1)],...
+            plot([obj.stringerX_L;obj.stringerX_L(1)],...
+                [obj.stringerY_L;obj.stringerY_L(1)],...
                 'LineWidth',options.lineWidth,...
                 'MarkerSize',options.markerSize,...
                 'Color',options.colorStringer,...
                 'DisplayName','Stringer');
-            plot(obj.xCoordinates_L,obj.yCoordinates_L,'o',...
+            plot(obj.stringerX_L,obj.stringerY_L,'o',...
                 'LineWidth',options.lineWidth,...
                 'MarkerSize',options.markerSize,...
                 'Color',options.colorStringerPoints,...
@@ -422,25 +436,47 @@ classdef StairsGeometry < handle
 
             f = [fighA;fighB];
         end
-    
-        function [xLow,xMiddle,xHigh] = CutList(obj)
+
+        function [coordinatesLow,coordinatesMid,coordinatesHigh,coordinatesBottomLeft] = CutMarkings(obj)
             assert(obj.checkConsistency(),'Object does not appear consistent')
 
-            xCoordinates_L = obj.xCoordinates_L;
-            yCoordinates_L = obj.yCoordinates_L;
+            xCoordinates_L = obj.stringerX_L;
+            yCoordinates_L = obj.stringerY_L;
 
             N = length(xCoordinates_L);
-            
 
-            lowIndices = [N-1;N];
-
-            midIndices = [];
-            highIndices = [];
+            %compute low, mid, and high indices
+            indicesLow  = [N;N-1];
+            indicesMid  = [];
+            indicesHigh = [];
             for k=1:obj.numSteps
-                
+                indicesHigh = [indicesHigh;2*k];
+                indicesMid = [indicesMid;2*k+1];
             end
-            
+
+            %get index of bottom left point (this is different from rest)
+            indexBottomLeft = 1;
+
+            %Ensure we covered all indices and did not double count
+            indicesAll = sort([indicesLow;indicesMid;indicesHigh;indexBottomLeft]);
+            indicesCheck = [1:1:N]';
+
+            assert(AreMatricesSame(indicesAll,indicesCheck),'Error computing indices, missing or double counted an index');
+
+            coordinatesLow = [xCoordinates_L(indicesLow) yCoordinates_L(indicesLow)];
+
+            coordinatesMid = [xCoordinates_L(indicesMid) yCoordinates_L(indicesMid)];
+
+            coordinatesHigh = [xCoordinates_L(indicesHigh) yCoordinates_L(indicesHigh)];
+
+            coordinatesBottomLeft = [xCoordinates_L(indexBottomLeft) yCoordinates_L(indexBottomLeft)];
         end
+
+        function [] = VaryNumSteps(obj)
+            %Vary num steps
+            objNominal = obj;
+        end
+
     end
 
     %----------------------------------------------------------------------
@@ -452,7 +488,7 @@ classdef StairsGeometry < handle
 
             %Check critical dimension calculation
             distanceCheck = abs(norm(obj.pP - obj.pCrit) - obj.tS);
-            
+
             if(distanceCheck > obj.tS/10000)
                 isConsisent = false;
                 return

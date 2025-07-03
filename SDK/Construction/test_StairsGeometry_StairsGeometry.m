@@ -18,6 +18,5 @@ classdef test_StairsGeometry_StairsGeometry < matlab.unittest.TestCase
 
             tc.verifyTrue(isa(stairsGeometry,'StairsGeometry'))
         end
-
     end
 end
