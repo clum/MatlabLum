@@ -12,6 +12,7 @@ classdef StairsGeometry < handle
     %06/28/25: Added rotation.  Converted to class
     %06/30/25: Changed property names
     %07/02/25: Added LR and LT (rise and tread dimensions)
+    %07/03/25: Added VaryNumSteps
 
     %----------------------------------------------------------------------
     %Public properties/fields
@@ -333,13 +334,12 @@ classdef StairsGeometry < handle
             %
             %OUTPUT:    -TBD
             %
-            %See also StairsGeometry
-            %
             %Christopher Lum
             %lum@uw.edu
 
             %Version History
             %06/27/25: Created
+            %07/03/25: Turned off autoupdate and added tMin display
 
             arguments
                 obj                         (1,1) StairsGeometry
@@ -393,7 +393,9 @@ classdef StairsGeometry < handle
                 'LineWidth',options.lineWidth,...
                 'MarkerSize',options.markerSize,...
                 'Color',options.colorpM,...
-                'DisplayName','pM')
+                'DisplayName',['pM (tMin = ',num2str(obj.tMin),')'])
+
+            legend('Location','best','AutoUpdate','off')
 
             %Plot the risers and treads.  When drawing, add a line segment that
             %connects the last and first point
@@ -431,13 +433,18 @@ classdef StairsGeometry < handle
                 'Color',options.colorStringerPoints,...
                 'DisplayName','Stringer (Points)');
             axis('equal')
-            legend('Location','best')
+            legend('Location','best','AutoUpdate','off')
             grid on
 
             f = [fighA;fighB];
         end
 
-        function [coordinatesLow,coordinatesMid,coordinatesHigh,coordinatesBottomLeft] = CutMarkings(obj)
+        function [coordinatesLow,coordinatesMid,coordinatesHigh,coordinatesBottomLeft] = CutMarkings(obj,options)
+            arguments
+                obj (1,1) StairsGeometry
+                options.OutputFileCutMarkings   = 'CutMarkings.csv'
+            end
+
             assert(obj.checkConsistency(),'Object does not appear consistent')
 
             xCoordinates_L = obj.stringerX_L;
@@ -470,13 +477,266 @@ classdef StairsGeometry < handle
             coordinatesHigh = [xCoordinates_L(indicesHigh) yCoordinates_L(indicesHigh)];
 
             coordinatesBottomLeft = [xCoordinates_L(indexBottomLeft) yCoordinates_L(indexBottomLeft)];
+
+            %Export to a csv file
+            try
+                fid = fopen(options.OutputFileCutMarkings,'w');
+
+                %coordinatesLow
+                [M,~] = size(coordinatesLow);
+                fprintf(fid,'coordinatesLow\n');
+                for m=1:M
+                    fprintf(fid,'%f,%f\n',coordinatesLow(m,1),coordinatesLow(m,2));
+                end
+                fprintf(fid,'\n');
+
+                %coordinatesMid
+                [M,~] = size(coordinatesMid);
+                fprintf(fid,'coordinatesMid\n');
+                for m=1:M
+                    fprintf(fid,'%f,%f\n',coordinatesMid(m,1),coordinatesMid(m,2));
+                end
+                fprintf(fid,'\n');
+                
+                %coordinatesHigh
+                [M,~] = size(coordinatesHigh);
+                fprintf(fid,'coordinatesHigh\n');
+                for m=1:M
+                    fprintf(fid,'%f,%f\n',coordinatesHigh(m,1),coordinatesHigh(m,2));
+                end
+                fprintf(fid,'\n');
+
+                %coordinatesBottomLeft
+                [M,~] = size(coordinatesBottomLeft);
+                fprintf(fid,'coordinatesBottomLeft\n');
+                for m=1:M
+                    fprintf(fid,'%f,%f\n',coordinatesBottomLeft(m,1),coordinatesBottomLeft(m,2));
+                end
+                fprintf(fid,'\n');
+
+            catch ME
+                warning(ME.message)
+                fclose(fid)
+            end
+
+            fclose(fid);
+            disp(['Wrote to ',options.OutputFileCutMarkings])
         end
 
-        function [] = VaryNumSteps(obj)
-            %Vary num steps
-            objNominal = obj;
+        function [] = VaryNumSteps(obj,numStepsVec,options)
+            %VaryNumSteps Varies number of steps.
+            %
+            %   VaryNumSteps(obj,numStepsVec) Varies the number of steps
+            %   and performs analysis to help select a suitable
+            %   configuration.
+            %
+            %INPUT:     -See function
+            %
+            %OUTPUT:    -None
+            %
+            %See also StairsGeometry
+            %
+            %Christopher Lum
+            %lum@uw.edu
+
+            %Version History
+            %07/02/25: Created
+            %07/03/25: Updated
+
+            arguments
+                obj                                     (1,1) StairsGeometry
+                numStepsVec
+                options.PlotIndividualConfigurations    (1,1) logical = false
+                options.lineWidth                       (1,1) double = 2
+                options.markerSize                      (1,1) double = 13
+            end
+
+            %Parameters
+            riserHeightMin_in = 4;
+            riserHeightMax_in = 7.75;
+
+            treadDepthMin_in = 11;
+
+            thetaMax_rad = atan2(7,11);
+
+            %store numSteps
+            numStepsOriginal = obj.numSteps;
+
+            %Vary numSteps and obtain
+            unitRiseVec = zeros(size(numStepsVec));
+            unitRunVec  = zeros(size(numStepsVec));
+            thetaVec    = zeros(size(numStepsVec));
+            tMinVec     = zeros(size(numStepsVec));
+            LRVec       = zeros(size(numStepsVec));
+            LTVec       = zeros(size(numStepsVec));
+            LRLVec      = zeros(size(numStepsVec));
+
+            for k=1:length(numStepsVec)
+                obj.numSteps = numStepsVec(k);
+                obj.UpdateDerivedParameters();
+
+                unitRiseVec(k)  = obj.unitRise;
+                unitRunVec(k)   = obj.unitRun;
+                thetaVec(k)     = obj.theta;
+                tMinVec(k)      = obj.tMin;
+                LRVec(k)        = obj.LR;
+                LTVec(k)        = obj.LT;
+                LRLVec(k)       = obj.LRL;
+
+                if(options.PlotIndividualConfigurations)
+                    obj.PlotStairsGeometry();
+                end
+            end
+
+            %Plot results
+            figure
+            subplot(7,1,1)
+            hold on
+            plot(numStepsVec,unitRiseVec,'ro',...
+                'MarkerSize',options.markerSize,'LineWidth',options.lineWidth,'DisplayName','unitRise');
+            plot(numStepsVec,riserHeightMin_in*ones(size(numStepsVec)),'m--',...
+                'LineWidth',options.lineWidth,'DisplayName',StringWithUnderscoresForPlot(['riserHeightMin_in = ',num2str(riserHeightMin_in)]))
+            plot(numStepsVec,riserHeightMax_in*ones(size(numStepsVec)),'m--',...
+                'LineWidth',options.lineWidth,'DisplayName',StringWithUnderscoresForPlot(['riserHeightMax_in = ',num2str(riserHeightMax_in)]))
+            grid on
+            legend('Location','best')
+
+            subplot(7,1,2)
+            hold on
+            plot(numStepsVec,unitRunVec,'ro',...
+                'MarkerSize',options.markerSize,'LineWidth',options.lineWidth,'DisplayName','unitRun');
+            plot(numStepsVec,treadDepthMin_in*ones(size(numStepsVec)),'m--',...
+                'LineWidth',options.lineWidth,'DisplayName',StringWithUnderscoresForPlot(['treadDepthMin_in = ',num2str(treadDepthMin_in)]))
+            grid on
+            legend('Location','best')
+
+            subplot(7,1,3)
+            hold on
+            plot(numStepsVec,rad2deg(thetaVec),'ro',...
+                'MarkerSize',options.markerSize,'LineWidth',options.lineWidth,'DisplayName','rad2deg(theta)');
+            plot(numStepsVec,rad2deg(thetaMax_rad)*ones(size(numStepsVec)),'m--',...
+                'LineWidth',options.lineWidth,'DisplayName',StringWithUnderscoresForPlot(['rad2deg(thetaMax_rad) = ',num2str(rad2deg(thetaMax_rad))]))
+            grid on
+            legend('Location','best')
+
+            subplot(7,1,4)
+            plot(numStepsVec,tMinVec,'ro',...
+                'MarkerSize',options.markerSize,'LineWidth',options.lineWidth,'DisplayName','tMin');
+            grid on
+            legend('Location','best')
+
+            subplot(7,1,5)
+            plot(numStepsVec,LRVec,'ro',...
+                'MarkerSize',options.markerSize,'LineWidth',options.lineWidth,'DisplayName','LR');
+            grid on
+            legend('Location','best')
+
+            subplot(7,1,6)
+            plot(numStepsVec,LTVec,'ro',...
+                'MarkerSize',options.markerSize,'LineWidth',options.lineWidth,'DisplayName','LT');
+            grid on
+            legend('Location','best')
+
+            subplot(7,1,7)
+            plot(numStepsVec,LRLVec,'ro',...
+                'MarkerSize',options.markerSize,'LineWidth',options.lineWidth,'DisplayName','LRL');
+            grid on
+            legend('Location','best')
+            xlabel('Number Steps')
+
+            %Restore original numSteps
+            obj.numSteps = numStepsOriginal;
+            obj.UpdateDerivedParameters();
         end
 
+        function [] = ExportToCsvFusion(obj,options)
+            %ExportToCsvFusion Exports geometry to csv files for Fusion.
+            %
+            %   ExportToCsvFusion(obj) Exports various geometries to csv
+            %   files that can be imported to Fusion to create objects.
+            %   Note that this adds a point at the end which is the same as
+            %   the first point so the resulting object can be imported as
+            %   a closed profile.
+            %
+            %INPUT:     -See function
+            %
+            %OUTPUT:    -None
+            %
+            %Christopher Lum
+            %lum@uw.edu
+
+            %Version History
+            %07/04/25: Created
+
+            arguments
+                obj (1,1) StairsGeometry
+                options.OutputFileStringer                  = 'PointsStringer.csv'
+                options.OutputFileRiserFinishedMaterial     = 'PointsRiserFinishedMaterial.csv'
+                options.OutputFileTreadFinishedMaterial     = 'PointsTreadFinishedMaterial.csv'
+            end
+
+            stringerX           = obj.stringerX;
+            stringerY           = obj.stringerY;
+            riserCoordinates    = obj.riserCoordinates;
+            treadCoordinates    = obj.treadCoordinates;
+
+            %stringer
+            stringer = [
+                stringerX stringerY;
+                stringerX(1) stringerY(1)
+                ];
+
+            writematrix(stringer,options.OutputFileStringer,'Delimiter',',');
+            disp(['Wrote to ',options.OutputFileStringer])
+
+            %RiserFinishedMaterial
+            try
+                fid2 = fopen(options.OutputFileRiserFinishedMaterial,'w');
+                for k=1:length(riserCoordinates)
+                    riserCoordinates_k = riserCoordinates{k};
+
+                    for m=1:length(riserCoordinates_k)
+                        fprintf(fid2,'%f,%f\n',riserCoordinates_k(m,1),riserCoordinates_k(m,2));
+                    end
+
+                    %add a point at the start to close the profile
+                    fprintf(fid2,'%f,%f\n',riserCoordinates_k(1,1),riserCoordinates_k(1,2));
+
+                    fprintf(fid2,'\n');
+                end
+
+            catch ME
+                warning(ME.message)
+                fclose(fid2)
+            end
+
+            fclose(fid2);
+            disp(['Wrote to ',options.OutputFileRiserFinishedMaterial])
+
+            %TreadFinishedMaterial
+            try
+                fid3 = fopen(options.OutputFileTreadFinishedMaterial,'w');
+                for k=1:length(treadCoordinates)
+                    treadCoordinates_k = treadCoordinates{k};
+
+                    for m=1:length(treadCoordinates_k)
+                        fprintf(fid3,'%f,%f\n',treadCoordinates_k(m,1),treadCoordinates_k(m,2));
+                    end
+
+                    %add a point at the start to close the profile
+                    fprintf(fid3,'%f,%f\n',treadCoordinates_k(1,1),treadCoordinates_k(1,2));
+
+                    fprintf(fid3,'\n');
+                end
+
+            catch ME
+                warning(ME.message)
+                fclose(fid3)
+            end
+
+            fclose(fid3);
+            disp(['Wrote to ',options.OutputFileTreadFinishedMaterial])
+        end
     end
 
     %----------------------------------------------------------------------

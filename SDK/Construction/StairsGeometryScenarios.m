@@ -4,6 +4,7 @@ tCarpet = 0.35;
 tInsulation = 1;
 tOSB = 7/16;
 tVinylFlooring = 0.27;
+t2xMaterial = 1.5;      %2x4 thickness
 
 switch scenarioID
     case 1
@@ -24,12 +25,15 @@ switch scenarioID
 
     case 3
         %use a 2x material for the rise.  Actual dimensions of shed.
-        baseScenario = 1;
-        [rise,run,numSteps,tR,tT,tFMBF,tS] = StairsGeometryScenarios(baseScenario);
+        tFMBF       = tInsulation + tOSB + tVinylFlooring;  %insulation + OSB + vinyl flooring
         
-        rise = 107.5 - (tInsulation + tOSB + tVinylFlooring) + tCarpet;
-        run = 107;
-        tT = 1.5 + tCarpet;
+        rise = 107.25 - tFMBF + tCarpet;
+        run = 105;
+        numSteps = 13;
+        tR = tOSB + tCarpet;
+        tT = t2xMaterial + tCarpet;
+        tS = 11.25;
+
     otherwise
         error('Unsupported scenarioID');
 end
