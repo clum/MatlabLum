@@ -514,6 +514,13 @@ classdef StairsGeometry < handle
                 end
                 fprintf(fid,'\n');
 
+                %table for 1/16" conversion to decimal
+                fprintf(fid,'1/16 fraction to decimal conversion table\n');
+                for m=1:15
+                    fprintf(fid,'%1.0f/16 = %1.5f\n',m,m/16);
+                end
+                fprintf(fid,'\n')
+
             catch ME
                 warning(ME.message)
                 fclose(fid)
