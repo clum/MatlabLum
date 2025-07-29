@@ -5,7 +5,7 @@ classdef StairsGeometry < handle
     %lum@uw.edu
 
     %03/09/25: Created
-    %04/12/25: Finished wvork.
+    %04/12/25: Finished work.
     %06/24/25: Updated for riser and tread material
     %06/26/25: Continued working
     %06/27/25: Changing to output to stairStruct object.
@@ -13,6 +13,7 @@ classdef StairsGeometry < handle
     %06/30/25: Changed property names
     %07/02/25: Added LR and LT (rise and tread dimensions)
     %07/03/25: Added VaryNumSteps
+    %07/28/25: Documentation update
 
     %----------------------------------------------------------------------
     %Public properties/fields
@@ -21,10 +22,10 @@ classdef StairsGeometry < handle
         rise        = 8*12;
         run         = 9*12;
         numSteps    = 14;
-        tR          = 7/16 + 0.35;       %OSB + carpet
-        tT          = 23/32 + 0.35;
-        tFMBF       = 1 + 7/16 + 0.27;     %insulation + OSB + vinyl flooring
-        tS          = 11.25;  %2x10 = 9.25", 2x12 = 11.25"
+        tR          = 7/16 + 0.35;          %thickness of riser material (ie OSB + carpet)
+        tT          = 23/32 + 0.35;         %thickness of tread material (ie 2-by material + carpet)
+        tFMBF       = 1 + 7/16 + 0.27;      %thickness of finished material on bottom floor (ie insulation + OSB + vinyl flooring)
+        tS          = 11.25;                %thickness of stringer member (2x10 = 9.25", 2x12 = 11.25")
     end
 
     %----------------------------------------------------------------------
@@ -45,7 +46,7 @@ classdef StairsGeometry < handle
         treadCoordinates    = [];
         stringerX_L         = [];
         stringerY_L         = [];
-        LR                  = [];   %vertical lenght of riser material
+        LR                  = [];   %vertical length of riser material
         LT                  = [];   %horizontal length of tread material
         LRL                 = [];   %raw lumber length
     end
