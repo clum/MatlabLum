@@ -1,11 +1,12 @@
-classdef test_StairsGeometry_ComputeDerivedParameters < matlab.unittest.TestCase
-    %Test the StairsGeometry.ComputeDerivedParameters method
+classdef test_StairsGeometry_UpdateDerivedParameters < matlab.unittest.TestCase
+    %Test the StairsGeometry.UpdateDerivedParameters method
     %
     %Christopher Lum
     %lum@uw.edu
 
     %Version History
     %06/28/25: Created
+    %07/29/25: Changed name
 
     methods(Test)
         %Standard example
