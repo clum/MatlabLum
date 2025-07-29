@@ -323,17 +323,16 @@ classdef StairsGeometry < handle
         end
 
         function [f] = PlotStairsGeometry(obj,options)
-            %PlotStairsGeometry Plots the output of StairsGeometery
+            %PlotStairsGeometry Plots the StairsGeometery
             %
-            %   PlotStairsGeometry(obj) Plots the struct that is
-            %   computed/output from StairsGeometry.
+            %   PlotStairsGeometry(obj) Plots the StairsGeometry object.
             %
             %   PlotStairsGeometry(obj,name,val,...) Does as above but uses
             %   the specified options in name/value pairs.
             %
-            %INPUT:     -TBD
+            %INPUT:     -See function
             %
-            %OUTPUT:    -TBD
+            %OUTPUT:    -f: figure handle
             %
             %Christopher Lum
             %lum@uw.edu
@@ -341,6 +340,7 @@ classdef StairsGeometry < handle
             %Version History
             %06/27/25: Created
             %07/03/25: Turned off autoupdate and added tMin display
+            %07/29/25: Minor documentation update
 
             arguments
                 obj                         (1,1) StairsGeometry
