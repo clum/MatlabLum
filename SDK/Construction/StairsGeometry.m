@@ -279,8 +279,8 @@ classdef StairsGeometry < handle
             end
 
             %% Rotate coordinates
-            %Express coordinates in frame aligned with rough lumber (this makes cutting
-            %the stringer easier)
+            %Express coordinates in frame aligned with rough lumber (this
+            %makes cutting the stringer easier)
 
             %Rotation matrix from cartesian frame (F_C) to lumber frame (F_L)
             C_LC = [cos(theta) sin(theta);
@@ -332,7 +332,7 @@ classdef StairsGeometry < handle
             %
             %INPUT:     -See function
             %
-            %OUTPUT:    -f: figure handle
+            %OUTPUT:    -f: figure handles
             %
             %Christopher Lum
             %lum@uw.edu
@@ -443,7 +443,7 @@ classdef StairsGeometry < handle
         function [coordinatesLow,coordinatesMid,coordinatesHigh,coordinatesBottomLeft] = CutMarkings(obj,options)
             arguments
                 obj (1,1) StairsGeometry
-                options.OutputFileCutMarkings   = 'CutMarkings.csv'
+                options.OutputFileCutMarkings   = 'CutMarkingsStringer.csv'
             end
 
             assert(obj.checkConsistency(),'Object does not appear consistent')
@@ -520,7 +520,7 @@ classdef StairsGeometry < handle
                 for m=1:15
                     fprintf(fid,'%1.0f/16 = %1.5f\n',m,m/16);
                 end
-                fprintf(fid,'\n')
+                fprintf(fid,'\n');
 
             catch ME
                 warning(ME.message)
