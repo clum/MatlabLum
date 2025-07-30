@@ -18,32 +18,20 @@ classdef LeanToRafterGeometry < handle
         w           = 150;      %width of building (outside edge to outside edge)
         tR          = 9.25;     %thickness of rafter member (2x10 = 9.25")
         L           = 12*12;    %length of rafter member
-        wTP         = 3.5;      %width of top plate (ie 3.5")
-        
+        wTP         = 3.5;      %width of top plate (ie 3.5")        
     end
 
     %----------------------------------------------------------------------
     %Public Get but Private Set properties/fields
     %----------------------------------------------------------------------
     properties (GetAccess='public', SetAccess='private')
-        rafterX           = [];
-        rafterY           = [];
-        theta               = [];
-        % pFMBF               = [];
-        % pP                  = [];
-        % pCrit               = [];
-        % pM                  = [];
-        % tMin                = [];
-        % riserCoordinates    = [];
-        % treadCoordinates    = [];
-        rafterX_L         = [];
-        rafterY_L         = [];
-        % LR                  = [];   %vertical length of riser material
-        % LT                  = [];   %horizontal length of tread material
-        % LRL                 = [];   %raw lumber length
-        e               = [];   %horizontal depth of birdsmouth cut
-        LT              = [];   %length of overhang on top side (horizontal projection)
-
+        rafterX     = [];
+        rafterY     = [];
+        theta       = [];
+        rafterX_L   = [];
+        rafterY_L   = [];
+        e           = [];   %horizontal depth of birdsmouth cut
+        LT          = [];   %length of overhang on top side (horizontal projection)
     end
 
     %----------------------------------------------------------------------
@@ -213,130 +201,6 @@ classdef LeanToRafterGeometry < handle
             %LT
             LT = x8 - x7 - (obj.wTP - e);
 
-            % warning('DELETE BELOW')
-            % %Intermediate variables
-            % unitRise = obj.rise/obj.numSteps;
-            % unitRun  = obj.run/obj.numSteps;
-            % 
-            % %Compute points
-            % stringerX(end+1,1) = 0;
-            % stringerY(end+1,1) = 0;
-            % 
-            % %Get the first point above the subfloor
-            % stringerX(end+1,1) = 0;
-            % stringerY(end+1,1) = obj.tFMBF + unitRise - obj.tT;
-            % 
-            % %Get the front faces of each step
-            % for k=1:obj.numSteps-1
-            %     stringerX(end+1,1) = stringerX(end) + unitRun;
-            %     stringerY(end+1,1) = stringerY(end);
-            % 
-            %     stringerX(end+1,1) = stringerX(end);
-            %     stringerY(end+1,1) = stringerY(end) + unitRise;
-            % end
-            % 
-            % %Get the top right point
-            % stringerX(end+1,1) = stringerX(end) + unitRun;
-            % stringerY(end+1,1) = stringerY(end);
-            % 
-            % %Get the angle, theta, using points 2 and 4
-            % x2 = stringerX(2);
-            % y2 = stringerY(2);
-            % 
-            % x4 = stringerX(4);
-            % y4 = stringerY(4);
-            % 
-            % theta = atan2(y4-y2,x4-x2);
-            % thetaCheck = atan2(obj.rise,obj.run);
-            % assert(AreMatricesSame(theta,thetaCheck,deg2rad(0.0001)));
-            % 
-            % %The bottom of the stringer should be slid out as much as possible to
-            % 
-            % %Compute the projected point
-            % pTLx = stringerX(end-1);
-            % pTLy = stringerY(end-1);
-            % pTL = [pTLx;pTLy];
-            % 
-            % pTRx = stringerX(end);
-            % pTRy = stringerY(end);
-            % pTR = [pTRx;pTRy];
-            % 
-            % v1x = obj.tS*sin(theta);
-            % v1y = -obj.tS*cos(theta);
-            % 
-            % %In some cases it is safer to use the numStep-1 point
-            % pTLx_alt = stringerX(end-3);
-            % pTLy_alt = stringerY(end-3);
-            % pCrit = [stringerX(end-4);stringerY(end-4)];
-            % 
-            % pPx = pTLx_alt + v1x;
-            % pPy = pTLy_alt + v1y;
-            % pP = [pPx;pPy];
-            % 
-            % %Compute pPR.  Do this by projecting pP along the line inclined at angle
-            % %theta until the x component is equal to pTRx
-            % DT = -(pPx - pTRx)*sec(theta);
-            % 
-            % pPRx = pPx + DT*cos(theta);
-            % pPRy = pPy + DT*sin(theta);
-            % pPR = [pPRx;pPRy];
-            % 
-            % stringerX(end+1,1) = pPRx;
-            % stringerY(end+1,1) = pPRy;
-            % 
-            % %Compute pPL.  Do this by creating a unit vector from pPR towards pP and
-            % %then projecting this vector until the x component is equal to 0
-            % v = [pPx-pPRx;pPy-pPRy];
-            % u = v*(1/norm(v));
-            % uy = u(2);
-            % 
-            % DB = -(pPRy/uy);
-            % 
-            % pPL = pPR + DB*u;
-            % 
-            % stringerX(end+1,1) = pPL(1);
-            % stringerY(end+1,1) = pPL(2);
-            % 
-            % %% Compute extra parameters
-            % %Minimum thickness distance and points
-            % DM = unitRise*sin(theta);
-            % pM = pPR + (DT+DM)*u;
-            % 
-            % tMin = norm(pM - pCrit);
-            % 
-            % %Coordinates for riser and tread materials
-            % for k=1:obj.numSteps
-            %     m = 2*k;
-            %     xCorner = stringerX(m);
-            %     yCorner = stringerY(m);
-            % 
-            %     %riser
-            %     xMinR = xCorner-obj.tR;
-            %     xMaxR = xCorner;
-            % 
-            %     yMinR = yCorner-unitRise+obj.tT;
-            %     yMaxR = yCorner;
-            %     LR = yMaxR - yMinR;
-            % 
-            %     xRiser = [xMinR;xMaxR;xMaxR;xMinR];
-            %     yRiser = [yMinR;yMinR;yMaxR;yMaxR];
-            % 
-            %     riserCoordinates{k} = [xRiser yRiser];
-            % 
-            %     %tread
-            %     xMinT = xCorner-obj.tR;
-            %     xMaxT = xCorner+unitRun;
-            %     LT = xMaxT - xMinT;
-            % 
-            %     yMinT = yCorner;
-            %     yMaxT = yCorner+obj.tT;
-            % 
-            %     xTread = [xMinT;xMaxT;xMaxT;xMinT];
-            %     yTread = [yMinT;yMinT;yMaxT;yMaxT];
-            % 
-            %     treadCoordinates{k} = [xTread yTread];
-            % end
-
             %% Rotate coordinates
             %Express coordinates in frame aligned with rough lumber (this
             %makes cutting the rafter easier)
@@ -357,17 +221,8 @@ classdef LeanToRafterGeometry < handle
             obj.rafterX     = rafterX;
             obj.rafterY     = rafterY;            
             obj.theta       = theta;
-            % obj.pFMBF               = [0;obj.tFMBF];
-            % obj.pP                  = [pPx;pPy];
-            % obj.pCrit               = pCrit;
-            % obj.pM                  = pM;
-            % obj.tMin                = tMin;
-            % obj.riserCoordinates    = riserCoordinates;
-            % obj.treadCoordinates    = treadCoordinates;
             obj.rafterX_L   = rafterX_L;
             obj.rafterY_L   = rafterY_L;
-            % obj.LRL                 = LRL;
-            % obj.LR                  = LR;
             obj.e           = e;
             obj.LT          = LT;
 
@@ -399,12 +254,6 @@ classdef LeanToRafterGeometry < handle
                 options.markerSize          (1,1) double = 13
                 options.colorRafter         (1,3) double = [153 102 0]/255;
                 options.colorRafterPoints   (1,3) double = [255 0 0]/255;
-                % options.colorFMBF           (1,3) double = [255 51 153]/255;
-                % options.colorpP             (1,3) double = [0 255 0]/255;
-                % options.colorpCrit          (1,3) double = [255 192 0]/255;
-                % options.colorpM             (1,3) double = [255 192 0]/255;
-                % options.colorRisers         (1,3) double = [112 48 160]/255;
-                % options.colorTreads         (1,3) double = [146 208 80]/255;
             end
 
             fighA = figure;
@@ -423,49 +272,7 @@ classdef LeanToRafterGeometry < handle
                 'Color',options.colorRafterPoints,...
                 'DisplayName','Stringer (Points)');
 
-            % plot(obj.pFMBF(1),obj.pFMBF(2),'^',...
-            %     'LineWidth',options.lineWidth,...
-            %     'MarkerSize',options.markerSize,...
-            %     'Color',options.colorFMBF,...
-            %     'DisplayName','pFMBF')
-            % 
-            % plot(obj.pP(1),obj.pP(2),'o',...
-            %     'LineWidth',options.lineWidth,...
-            %     'MarkerSize',options.markerSize,...
-            %     'Color',options.colorpP,...
-            %     'DisplayName','pP')
-            % 
-            % plot(obj.pCrit(1),obj.pCrit(2),'x',...
-            %     'LineWidth',options.lineWidth,...
-            %     'MarkerSize',options.markerSize,...
-            %     'Color',options.colorpCrit,...
-            %     'DisplayName','pCrit')
-            % 
-            % plot(obj.pM(1),obj.pM(2),'o',...
-            %     'LineWidth',options.lineWidth,...
-            %     'MarkerSize',options.markerSize,...
-            %     'Color',options.colorpM,...
-            %     'DisplayName',['pM (tMin = ',num2str(obj.tMin),')'])
-
             legend('Location','best','AutoUpdate','off')
-
-            % %Plot the risers and treads.  When drawing, add a line segment that
-            % %connects the last and first point
-            % for k=1:obj.numSteps
-            %     riserCoordinates_k = obj.riserCoordinates{k};
-            %     treadCoordinates_k = obj.treadCoordinates{k};
-            % 
-            %     plot([riserCoordinates_k(:,1);riserCoordinates_k(1,1)],...
-            %         [riserCoordinates_k(:,2);riserCoordinates_k(1,2)],'--',...
-            %         'LineWidth',options.lineWidth,...
-            %         'Color',options.colorRisers)
-            % 
-            %     plot([treadCoordinates_k(:,1);treadCoordinates_k(1,1)],...
-            %         [treadCoordinates_k(:,2);treadCoordinates_k(1,2)],'--',...
-            %         'LineWidth',options.lineWidth,...
-            %         'Color',options.colorTreads)
-            % end
-
             axis('equal')
             legend('Location','best')
             grid on
@@ -600,14 +407,7 @@ classdef LeanToRafterGeometry < handle
         function [isConsistent] = checkConsistency(obj)
             isConsistent = true;
 
-            % %Check critical dimension calculation
-            % distanceCheck = abs(norm(obj.pP - obj.pCrit) - obj.tS);
-            % 
-            % if(distanceCheck > obj.tS/10000)
-            %     isConsisent = false;
-            %     return
-            % end
-
+            %TO DO: Add consistency checks
         end
     end
 
